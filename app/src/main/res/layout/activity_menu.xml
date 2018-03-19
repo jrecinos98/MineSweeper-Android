@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/empty">
+
+    <Button
+        android:id="@+id/myPlayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="181dp"
+        android:background="@android:drawable/ic_media_play" />
+
+    <TextView
+        android:id="@+id/playMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/myPlayButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="55dp"
+        android:text="Click To PLay"
+        android:textAllCaps="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textSize="36sp"
+        android:textStyle="italic"
+        android:typeface="serif" />
+
+</RelativeLayout>

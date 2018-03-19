@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="2dp"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gridview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+
+        android:layout_alignStart="@+id/myMinesweeperGrid"
+        android:layout_alignTop="@+id/myMinesweeperGrid"
+        android:background="#A9A9A9"
+        android:backgroundTint="#C0C0C0"
+        android:columnWidth="90dp"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" />
+    <!-- Ideally these values would go in the res/colors.xml -->
+
+    <!-- My Custom Grid -->
+    <com.example.recinos.myminesweepergame.Views.Grid.Grid
+        android:id="@+id/myMinesweeperGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+
+
+        >
+        <!--android:layout_alignParentBottom="true"-->
+    </com.example.recinos.myminesweepergame.Views.Grid.Grid>
+
+    <Button
+        android:id="@+id/mySurpriseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/myMainMenuButton"
+        android:layout_alignBottom="@+id/myMainMenuButton"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/block"
+        android:text="Surprise"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/myMainMenuButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/gridview"
+        android:layout_marginBottom="13dp"
+        android:layout_marginEnd="21dp"
+        android:layout_toStartOf="@+id/mySurpriseButton"
+        android:background="@drawable/block"
+        android:text="Main Menu" />
+
+    <Button
+        android:id="@+id/myResetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/mySurpriseButton"
+        android:layout_alignBottom="@+id/mySurpriseButton"
+        android:layout_marginStart="22dp"
+        android:layout_toEndOf="@+id/mySurpriseButton"
+        android:background="@drawable/block"
+        android:text="Reset" />
+</RelativeLayout>
+
+
