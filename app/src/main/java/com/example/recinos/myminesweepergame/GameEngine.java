@@ -12,6 +12,7 @@ import com.example.recinos.myminesweepergame.util.Generator;
  */
 
 public class GameEngine {
+    /*
     protected static GameEngine instance;
     private Context mContext;
     public int [][] gameGrid;
@@ -21,7 +22,7 @@ public class GameEngine {
     //only able to render a square grid correctly
     final public static int width = 10;
     final public static int height = 10;
-    final public static int bombNum = 10;
+    final public static int mineNum = 10;
 
 
     public static GameEngine getInstance() {
@@ -43,7 +44,7 @@ public class GameEngine {
     public void createGrid(Context context)
     {
         this.mContext=context;
-        gameGrid= Generator.generate(bombNum,width,height);
+        gameGrid= Generator.generate(mineNum,width,height);
         marked= Generator.initMarked(width,height);
         setGrid(mContext);
     }
@@ -55,7 +56,7 @@ public class GameEngine {
                 }
                 MineSweeperGrid[x][y].setValue(gameGrid[x][y]);
                 if (gameGrid[x][y]==10){
-                    MineSweeperGrid[x][y].setBomb();
+                    MineSweeperGrid[x][y].setMine();
                 }
                 MineSweeperGrid[x][y].invalidate();
             }
@@ -66,10 +67,10 @@ public class GameEngine {
         for(int x=0; x<width; x++){
             for (int y=0; y<height; y++){
                 if (game_over){
-                    MineSweeperGrid[x][y].isOver();
+                    MineSweeperGrid[x][y].gameOver();
                 }
                 else if (marked[x][y]){
-                    MineSweeperGrid[x][y].setClicked();
+                    MineSweeperGrid[x][y].setOpened();
                 }
                 //setClicked calls invalidate() which redraws Cell.
             }
@@ -87,5 +88,5 @@ public class GameEngine {
         int y= position/height;
         return marked[x][y];
     }
-
+*/
 }

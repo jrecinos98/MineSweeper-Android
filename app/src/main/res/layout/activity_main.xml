@@ -29,31 +29,18 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
-
-
         >
         <!--android:layout_alignParentBottom="true"-->
     </com.example.recinos.myminesweepergame.Views.Grid.Grid>
-
-    <Button
-        android:id="@+id/mySurpriseButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/myMainMenuButton"
-        android:layout_alignBottom="@+id/myMainMenuButton"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/block"
-        android:text="Surprise"
-        android:visibility="invisible" />
 
     <Button
         android:id="@+id/myMainMenuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/gridview"
+        android:layout_alignParentStart="true"
         android:layout_marginBottom="13dp"
-        android:layout_marginEnd="21dp"
-        android:layout_toStartOf="@+id/mySurpriseButton"
+        android:layout_marginStart="28dp"
         android:background="@drawable/block"
         android:text="Main Menu" />
 
@@ -61,10 +48,10 @@
         android:id="@+id/myResetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/mySurpriseButton"
-        android:layout_alignBottom="@+id/mySurpriseButton"
-        android:layout_marginStart="22dp"
-        android:layout_toEndOf="@+id/mySurpriseButton"
+        android:layout_alignBaseline="@+id/myMainMenuButton"
+        android:layout_alignBottom="@+id/myMainMenuButton"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="18dp"
         android:background="@drawable/block"
         android:text="Reset" />
 </RelativeLayout>

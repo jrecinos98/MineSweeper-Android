@@ -6,12 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.recinos.myminesweepergame.Constants.Constants;
+
 
 /**
  * Created by recinos on 2/11/18.
  */
 
 public class MenuActivity extends AppCompatActivity {
+    Constants.GameDifficulty difficulty= Constants.GameDifficulty.EASY;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,9 +23,10 @@ public class MenuActivity extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent toGame= new Intent(getApplicationContext(),MainActivity.class);
+                Intent toGame= new Intent(getApplicationContext(),GameActivity.class);
+                toGame.putExtra("GameDifficulty", difficulty);
                 startActivity(toGame);
+                finish();
             }
         });
 

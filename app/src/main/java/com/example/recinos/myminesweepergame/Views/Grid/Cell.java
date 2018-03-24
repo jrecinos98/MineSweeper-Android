@@ -17,9 +17,8 @@ import com.example.recinos.myminesweepergame.R;
 
 public class Cell extends View {
     private int value;
-    private boolean isBomb;
-    private boolean isMarked;
-
+    private boolean isMine;
+    private boolean isOpened;
     private boolean flagged;
     private int x;
     private int y;
@@ -31,9 +30,12 @@ public class Cell extends View {
             R.drawable.eight, R.drawable.flagged, R.drawable.mine, R.drawable.block,
     };
 
-    public Cell(Context context, int position ) {
+    public Cell(Context context, int position, int x, int y ) {
         super(context);
         this.position=position;
+        this.x=x; //position%GameEngine.width;
+        this.y=y; //position/GameEngine.height;
+
     }
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
@@ -44,63 +46,99 @@ public class Cell extends View {
         super.onDraw(canvas);
         drawCell(canvas);
     }
+    /**
+     *
+     * @param canvas
+     */
     private void drawCell(Canvas canvas){
         Drawable drawable;
         //This is where long click glitch might be.
-        if (this.isFlagged()&& !this.isClicked()) {
+        if (this.isFlagged() && !this.isOpened()) {
             drawable = ContextCompat.getDrawable(getContext(), Cell.thumbnails[9]);
         }
-        else if (this.isClicked()) {
+        else if (this.isOpened()) {
             drawable = ContextCompat.getDrawable(getContext(), Cell.thumbnails[this.getValue()]);
         }
         else{
             drawable= ContextCompat.getDrawable(getContext(),Cell.thumbnails[thumbnails.length-1]);
         }
-
         drawable.setBounds(0,0,getWidth(),getHeight());
         drawable.draw(canvas);
     }
     public int getValue() {
         return value;
     }
+    /**
+     * Checks whether a cell should be searched by path finding algorithm.
+     * @return
+     */
+    public boolean isMarked(){
+        if(isFlagged() || isOpened()){
+            return true;
+        }
+        return false;
+    }
     //Only Called when the player taps a mine. This ensures that flagged cells are also revealed at the end of the game.
-    public void isOver(){
+    public void gameOver(){
         flagged=false;
-        isMarked=true;
+        if(isMine()){
+            isOpened=true;
+        }
         invalidate();
     }
+    //plan to remove
     public void setValue(int value) {
-        isBomb=false;
-        isMarked=false;
+        isMine=false;
+        isOpened=false;
         flagged=false;
-        /*if (this.isBomb()){
-            isBomb=true;
+        /*if (this.isMine()){
+            isMine=true;
         }*/
         this.value = value;
     }
-    public boolean isClicked() {
-        return isMarked;
+    public boolean isOpened() {
+        return isOpened;
     }
-    public void setClicked() {
-        this.isMarked=true;
-        invalidate(); //invalidate view. After invalidation it gets redrawn (calls onDraw)
+
+    /**
+     * Marks a cell in the grid as opened and invalidates the view to call the overridden onDraw method to draw the correct image.
+     */
+    public void setOpened() {
+        if (!this.isFlagged()){
+            this.isOpened=true;
+            invalidate(); //invalidate view. After invalidation it gets redrawn (calls onDraw)
+        }
     }
+    //probably remove
+    /*
     public void setPosition(int position){
         this.position=position;
         x=position % GameEngine.width;
         y=position/GameEngine.height;
+    }*/
+    public boolean isMine() {
+        return isMine;
     }
-    public boolean isBomb() {
-        return isBomb;
-    }
-    public void setBomb(){
-        this.isBomb=true;
+    public void setMine(){
+        this.isMine=true;
+        value=10;
     }
     public boolean isFlagged() {
         return flagged;
     }
-    public void setFlagged(boolean flagged) {
-        this.flagged = flagged;
+    public void setFlagged() {
+        this.flagged = true;
+        invalidate();
+    }
+    public void unFlag(){
+        this.flagged=false;
+        invalidate();
+    }
+    public void setXPos(int xCor){
+        x=xCor;
+    }
+    public void setYPos(int yCor){
+        y=yCor;
     }
     public int getYPos(){
         return y;
