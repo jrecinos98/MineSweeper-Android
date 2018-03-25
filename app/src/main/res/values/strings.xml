@@ -2,5 +2,9 @@
     <string name="app_name">MineSweeper</string>
     <string name="warning">Warning</string>
     <string name="defaultDialog">Are you Sure you want to reset the current game?</string>
+    <string name="gameOver">Game Over</string>
+    <string name="lostPrompt">Better luck next time!</string>
+    <string name="gameWon">Congratulations!</string>
+    <string name="wonPrompt">You are Awesome!</string>
 
 </resources>

@@ -16,6 +16,8 @@ import com.example.recinos.myminesweepergame.Views.Grid.Grid;
 public class GameActivity extends AppCompatActivity {
     public static Constants.GameDifficulty difficulty;
     public static Constants.GameState gameState;
+    public static AlertDialog lostDialog;
+    private static AlertDialog wonDialog;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         difficulty = (Constants.GameDifficulty) getIntent().getSerializableExtra("GameDifficulty");
@@ -30,27 +32,25 @@ public class GameActivity extends AppCompatActivity {
         AlertDialog.Builder mBuilder= new AlertDialog.Builder(GameActivity.this);
         final View mView= getLayoutInflater().inflate(R.layout.dialog_custom,null);
         mBuilder.setView(mView);
-        final AlertDialog dialog = mBuilder.create();
-
+        final AlertDialog resetDialog = mBuilder.create();
         myResetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //recreate(); This method restarts an Activity.
-                dialog.show();
+                resetDialog.show();
                 Button noButton= (Button)mView.findViewById(R.id.myNoButton);
                 Button yesButton= (Button) mView.findViewById(R.id.myYesButton);
                 noButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
+                        resetDialog.dismiss();
                     }
                 });
                 yesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         recreate();
-                        dialog.dismiss();
-
+                        resetDialog.dismiss();
                     }
                 });
 
@@ -66,8 +66,28 @@ public class GameActivity extends AppCompatActivity {
             }
 
         });
+        AlertDialog.Builder myBuilder= new AlertDialog.Builder(GameActivity.this);
+        final View lostView= getLayoutInflater().inflate(R.layout.dialog_custom_lost,null);
+        myBuilder.setView(lostView);
+        lostDialog = myBuilder.create();
 
 
+        AlertDialog.Builder wonBuilder= new AlertDialog.Builder(GameActivity.this);
+        final View wonView= getLayoutInflater().inflate(R.layout.dialog_custom_won,null);
+        wonBuilder.setView(wonView);
+        wonDialog = wonBuilder.create();
+
+
+
+    }
+    public static void showLostDialog(){
+       lostDialog.show();
+    }
+    public static void showWonDialog(){
+        wonDialog.show();
+    }
+    public static void dismissLostDialog(){
+        lostDialog.dismiss();
     }
 
 }

@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import com.example.recinos.myminesweepergame.GameEngine;
 import com.example.recinos.myminesweepergame.R;
 
 
@@ -23,6 +22,7 @@ public class Cell extends View {
     private int x;
     private int y;
     private int position;
+    public static int cellsOpened=0;
 
     private static Integer[] thumbnails = {
             R.drawable.empty, R.drawable.one, R.drawable.two, R.drawable.three,
@@ -33,8 +33,8 @@ public class Cell extends View {
     public Cell(Context context, int position, int x, int y ) {
         super(context);
         this.position=position;
-        this.x=x; //position%GameEngine.width;
-        this.y=y; //position/GameEngine.height;
+        this.x=x;
+        this.y=y;
 
     }
     @Override
@@ -78,22 +78,11 @@ public class Cell extends View {
         }
         return false;
     }
-    //Only Called when the player taps a mine. This ensures that flagged cells are also revealed at the end of the game.
-    public void gameOver(){
-        flagged=false;
-        if(isMine()){
-            isOpened=true;
-        }
-        invalidate();
-    }
     //plan to remove
     public void setValue(int value) {
         isMine=false;
         isOpened=false;
         flagged=false;
-        /*if (this.isMine()){
-            isMine=true;
-        }*/
         this.value = value;
     }
     public boolean isOpened() {
@@ -104,18 +93,12 @@ public class Cell extends View {
      * Marks a cell in the grid as opened and invalidates the view to call the overridden onDraw method to draw the correct image.
      */
     public void setOpened() {
-        if (!this.isFlagged()){
+        if (!this.isFlagged() && !this.isOpened()){
             this.isOpened=true;
+            cellsOpened++;
             invalidate(); //invalidate view. After invalidation it gets redrawn (calls onDraw)
         }
     }
-    //probably remove
-    /*
-    public void setPosition(int position){
-        this.position=position;
-        x=position % GameEngine.width;
-        y=position/GameEngine.height;
-    }*/
     public boolean isMine() {
         return isMine;
     }
