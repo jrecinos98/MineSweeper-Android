@@ -11,9 +11,9 @@ public abstract class Constants {
         WON
     }
     public enum GameDifficulty{
-        EASY(10,10,10),
-        MEDIUM(10,15,15),
-        HARD(15,20,20);
+        EASY(12,16,20),
+        MEDIUM(15,20,40),
+        HARD(20,28,80);
         private int width;
         private int height;
         private int mineNum;

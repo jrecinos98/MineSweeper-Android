@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#A9A9A9"
+    android:backgroundTint="#C0C0C0"
+    >
+
+    <TextView
+        android:id="@+id/gameOver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:text="@string/gameOver"
+        android:textAllCaps="true"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gameOver"
+        android:layout_centerHorizontal="true"
+        android:text="@string/lostPrompt"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:textStyle="bold"
+        android:typeface="serif"
+        android:visibility="visible" />
+<!--
+    <Button
+        android:id="@+id/myNoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/message"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/block"
+        android:text="Main Menu"
+        android:textSize="18sp"
+        android:visibility="visible"
+        />
+
+    <Button
+        android:id="@+id/myYesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/myNoButton"
+        android:layout_alignBottom="@+id/myNoButton"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="26dp"
+        android:background="@drawable/block"
+        android:text="Reset Game"
+        android:textSize="18sp" />-->
+
+</RelativeLayout>
