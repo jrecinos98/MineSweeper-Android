@@ -36,7 +36,6 @@ public class GameActivity extends AppCompatActivity {
         myResetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //recreate(); This method restarts an Activity.
                 resetDialog.show();
                 Button noButton= (Button)mView.findViewById(R.id.myNoButton);
                 Button yesButton= (Button) mView.findViewById(R.id.myYesButton);
@@ -71,7 +70,6 @@ public class GameActivity extends AppCompatActivity {
         myBuilder.setView(lostView);
         lostDialog = myBuilder.create();
 
-
         AlertDialog.Builder wonBuilder= new AlertDialog.Builder(GameActivity.this);
         final View wonView= getLayoutInflater().inflate(R.layout.dialog_custom_won,null);
         wonBuilder.setView(wonView);
@@ -85,9 +83,6 @@ public class GameActivity extends AppCompatActivity {
     }
     public static void showWonDialog(){
         wonDialog.show();
-    }
-    public static void dismissLostDialog(){
-        lostDialog.dismiss();
     }
 
 }

@@ -5,15 +5,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/background">
 
-    <Button
-        android:id="@+id/myPlayButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="168dp"
-        android:background="@drawable/playicon" />
-
     <TextView
         android:id="@+id/playMessage"
         android:layout_width="wrap_content"
@@ -27,5 +18,32 @@
         android:textColor="@color/white"
         android:textSize="36sp"
         android:textStyle="italic" />
+
+    <Button
+        android:id="@+id/myMediumButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/myHardButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="29dp"
+        android:text="Medium Game" />
+
+    <Button
+        android:id="@+id/myEasyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/myMediumButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        android:text="Easy Game" />
+
+    <Button
+        android:id="@+id/myHardButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/myEasyButton"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="88dp"
+        android:text="Hard Game" />
 
 </RelativeLayout>

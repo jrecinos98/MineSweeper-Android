@@ -24,8 +24,6 @@ public class Grid extends GridView{
     private Constants.GameState gameState;
     private Constants.GameDifficulty gameDifficulty;
     private int mineNum=0;
-
-   // GridAdapter gridAdapter= new GridAdapter();
     public Grid(Context context, AttributeSet attrs) {
         super(context, attrs);
         gameContext=context;
@@ -74,14 +72,13 @@ public class Grid extends GridView{
                     gameState= Constants.GameState.WON;
                     gameWon();
                 }
-                //gridAdapter.notifyDataSetChanged();
                 return true;
             }
         });
     }
     private void handleCellEmpty(int position){
         int x= position%getGridWidth();
-        int y= position/getGridHeight();
+        int y= position/getGridWidth();
         PathFinder.findEmpty(x,y,this);
         //gridAdapter.notifyDataSetChanged(); //Notifies Adapter that the cells changed. Has a bug on first cell.
 
@@ -115,8 +112,8 @@ public class Grid extends GridView{
         return gameGrid[x][y];
     }
     public Cell getCell(int position){
-        int x= position%getGridWidth();
-        int y= position/getGridHeight();
+        int x= position%getNumColumns();
+        int y= position/getNumColumns();
         return gameGrid[x][y];
     }
     public int getGridWidth(){return gameDifficulty.getWidth();}
@@ -136,9 +133,7 @@ public class Grid extends GridView{
             return 0;
         }
         public View getView(int position, View convertView, ViewGroup parent) {
-            int x= position%getGridWidth();
-            int y= position/getGridHeight();
-            return gameGrid[x][y];
+            return getCell(position);
         }
     }
 
