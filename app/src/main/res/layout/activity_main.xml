@@ -1,61 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="2dp"
-    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="0dp"
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/gridview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/empty"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
 
-        android:layout_alignStart="@+id/myMinesweeperGrid"
-        android:layout_alignTop="@+id/myMinesweeperGrid"
-        android:background="#A9A9A9"
-        android:backgroundTint="#C0C0C0"
-        android:columnWidth="90dp"
-        android:gravity="center"
-        android:horizontalSpacing="10dp"
-        android:numColumns="auto_fit"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp" />
-    <!-- Ideally these values would go in the res/colors.xml -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="0dp"
+            android:paddingEnd="0dp">
 
-    <!-- My Custom Grid -->
+            <Button
+                android:id="@+id/mines0"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true" />
+
+            <Button
+                android:id="@+id/mines1"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="32dp" />
+
+            <Button
+                android:id="@+id/smileyButton"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
+                />
+
+            <Button
+                android:id="@+id/timer0"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="32dp" />
+
+            <Button
+                android:id="@+id/timer1"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/timer0" />
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+        
+
     <com.example.recinos.myminesweepergame.Views.Grid.Grid
         android:id="@+id/myMinesweeperGrid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        >
-        <!--android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"-->
+        android:layout_below="@+id/my_toolbar"
+        android:layout_centerHorizontal="true">
 
-        <!--android:layout_alignParentBottom="true"-->
     </com.example.recinos.myminesweepergame.Views.Grid.Grid>
 
-    <Button
-        android:id="@+id/myMainMenuButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/gridview"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="13dp"
-        android:layout_marginStart="28dp"
-        android:background="@drawable/block"
-        android:text="Main Menu" />
 
-    <Button
-        android:id="@+id/myResetButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/myMainMenuButton"
-        android:layout_alignBottom="@+id/myMainMenuButton"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="18dp"
-        android:background="@drawable/block"
-        android:text="Reset" />
 </RelativeLayout>
 
 

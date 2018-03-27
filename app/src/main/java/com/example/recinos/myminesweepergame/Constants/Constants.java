@@ -11,19 +11,22 @@ public abstract class Constants {
         WON
     }
     public enum GameDifficulty{
-        EASY(12,16,20),
-        MEDIUM(15,20,40),
-        HARD(20,28,80);
+        EASY(12,18,20,300),
+        MEDIUM(15,23,40,250),
+        HARD(20,30,80,300);
         private int width;
         private int height;
         private int mineNum;
-        GameDifficulty(int w, int h, int m){
+        private int toolBarHeight;
+        GameDifficulty(int w, int h, int m, int t){
             this.width=w;
             this.height=h;
             this.mineNum=m;
+            this.toolBarHeight=t;
         }
         public int getWidth(){return width;}
         public int getHeight(){return height;}
         public int getMineNum(){return mineNum;}
+        public int getToolBarHeight(){return toolBarHeight;}
     }
 }

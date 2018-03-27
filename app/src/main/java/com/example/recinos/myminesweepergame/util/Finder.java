@@ -3,6 +3,7 @@ package com.example.recinos.myminesweepergame.util;
 import com.example.recinos.myminesweepergame.Views.Grid.Cell;
 import com.example.recinos.myminesweepergame.Views.Grid.Grid;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Stack;
  *
  */
 
-public class PathFinder {
+public abstract class Finder {
     private static Stack<Cell> stack;
     //Assumes that the tapped button had value of 0.
     public static void findEmpty(int row, int col, Grid grid){
@@ -25,7 +26,6 @@ public class PathFinder {
             }
         }
     }
-
     /**
      * Helper function to find the surrounding Cells
      * @param grid The game grid.
@@ -68,6 +68,37 @@ public class PathFinder {
         }
 
     }
+    public static ArrayList<Integer> findNeighborPositions(int row, int column, Cell[][] grid){
+        //If cell is not on edge then use passed values.
+        int xStart=row-1;
+        int xEnd=row+1;
+        int yStart=column-1;
+        int yEnd=column+1;
+        ArrayList<Integer> neighborPositions = new ArrayList<>();
+        //if the cell is on the left edge.
+        if (xStart <0){
+            xStart=row;
+        }
+        //if the cell is in the right edge.
+        else if(xEnd > grid.length-1){
+            xEnd=row;
+        }
+        //if the cell is in the top edge.
+        if (yStart < 0){
+            yStart=column;
+        }
+        //if the cell is in the bottom edge.
+        else if(yEnd > grid[0].length-1){
+            yEnd=column;
+        }
+        for(int k=xStart; k<=xEnd; k++) {
+            for (int n = yStart; n <= yEnd; n++) {
+                neighborPositions.add(k+(n * grid.length));
+            }
+        }
+        return neighborPositions;
+
+    }
 
     /**
      * Helper to push a GridComponent into the Stack
@@ -104,7 +135,7 @@ public class PathFinder {
         for(int k=xStart; k<=xEnd; k++){
             for(int n=yStart; n<=yEnd; n++){
                 if(!grid[k][n].isMine()){
-                    grid[k][n].setValue(grid[k][n].getValue()+1);
+                    grid[k][n].increment();
                 }
             }
         }

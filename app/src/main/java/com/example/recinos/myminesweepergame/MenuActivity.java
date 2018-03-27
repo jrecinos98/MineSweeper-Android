@@ -49,7 +49,6 @@ public class MenuActivity extends AppCompatActivity {
                 difficulty=Constants.GameDifficulty.HARD;
                 toGame.putExtra("GameDifficulty", difficulty);
                 startActivity(toGame);
-                finish();
             }
         });
 

@@ -19,22 +19,29 @@ public class Cell extends View {
     private boolean isMine;
     private boolean isOpened;
     private boolean flagged;
+    private boolean clickedMine;
     private int x;
     private int y;
-    private int position;
+    private int currentImage;
     public static int cellsOpened=0;
+    private int FLAG= R.drawable.flagged;
+    private int QUESTION=R.drawable.question;
+    private int MINE= R.drawable.mine;
+    private int NORMAL= R.drawable.block;
+    private int CLICKED= R.drawable.clicked_bomb;
+    int position;
 
     private static Integer[] thumbnails = {
             R.drawable.empty, R.drawable.one, R.drawable.two, R.drawable.three,
             R.drawable.four, R.drawable.five, R.drawable.six, R.drawable.seven,
-            R.drawable.eight, R.drawable.flagged, R.drawable.mine, R.drawable.block,
+            R.drawable.eight,
     };
 
-    public Cell(Context context, int position, int x, int y ) {
+    public Cell(Context context, int x, int y, int position) {
         super(context);
-        this.position=position;
         this.x=x;
         this.y=y;
+        this.position=position;
 
     }
     @Override
@@ -53,14 +60,24 @@ public class Cell extends View {
     private void drawCell(Canvas canvas){
         Drawable drawable;
         //This is where long click glitch might be.
-        if (this.isFlagged() && !this.isOpened()) {
-            drawable = ContextCompat.getDrawable(getContext(), Cell.thumbnails[9]);
+        if(this.isMine() && this.isOpened()){
+            if(this.isClickedMine()){
+                drawable= ContextCompat.getDrawable(getContext(),CLICKED);
+            }
+            else
+                drawable= ContextCompat.getDrawable(getContext(),MINE);
+        }
+       else if (this.isFlagged() && !this.isOpened()) {
+            //currentImage=FLAG;
+            drawable = ContextCompat.getDrawable(getContext(), currentImage);
         }
         else if (this.isOpened()) {
+            currentImage=Cell.thumbnails[this.getValue()];
             drawable = ContextCompat.getDrawable(getContext(), Cell.thumbnails[this.getValue()]);
         }
         else{
-            drawable= ContextCompat.getDrawable(getContext(),Cell.thumbnails[thumbnails.length-1]);
+            currentImage=NORMAL;
+            drawable= ContextCompat.getDrawable(getContext(),NORMAL);
         }
         drawable.setBounds(0,0,getWidth(),getHeight());
         drawable.draw(canvas);
@@ -83,7 +100,18 @@ public class Cell extends View {
         isMine=false;
         isOpened=false;
         flagged=false;
+        clickedMine=false;
         this.value = value;
+    }
+    public void increment() {
+        if (!this.isMine()) {
+            value++;
+        }
+    }
+    public void decrement(){
+        if(!this.isMine()){
+            value--;
+        }
     }
     public boolean isOpened() {
         return isOpened;
@@ -117,17 +145,34 @@ public class Cell extends View {
         this.flagged=false;
         invalidate();
     }
-    public void setXPos(int xCor){
-        x=xCor;
+    public void setAsClickedMine(){
+        if(this.isMine()){
+            clickedMine=true;
+        }
     }
-    public void setYPos(int yCor){
-        y=yCor;
+    public boolean isClickedMine(){
+        return clickedMine;
     }
     public int getYPos(){
         return y;
     }
     public int getXPos() {
         return x;
+    }
+    public int getPosition(){return position;}
+    public void setNextFlagImage(Cell temp){
+        if(currentImage==NORMAL){
+            currentImage=FLAG;
+            this.setFlagged();
+        }
+        else if(currentImage==FLAG){
+            currentImage=QUESTION;
+            invalidate();
+        }
+        else if(currentImage==QUESTION){
+            currentImage=NORMAL;
+            this.unFlag();
+        }
     }
 
 
