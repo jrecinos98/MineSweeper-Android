@@ -47,10 +47,10 @@
 
             <Button
                 android:id="@+id/smileyButton"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerInParent="true" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:padding="5dp" />
 
             <Button
                 android:id="@+id/timer2"
@@ -77,19 +77,18 @@
                 android:layout_marginEnd="66dp" />
 
             <Button
-                android:id="@+id/mySettingsButton"
-                android:layout_width="45dp"
-                android:layout_height="35dp"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/mines1"
+                android:id="@+id/myHintButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/myActionButton"
                 android:paddingTop="0dp" />
 
             <Button
-                android:id="@+id/myHintButton"
-                android:layout_width="45dp"
-                android:layout_height="35dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="11dp"
+                android:id="@+id/myActionButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/mines1"
                 android:paddingBottom="5dp" />
         </RelativeLayout>

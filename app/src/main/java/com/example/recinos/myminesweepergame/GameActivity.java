@@ -23,6 +23,8 @@ public class GameActivity extends AppCompatActivity {
     public static Constants.GAME_STATE GAME_STATE;
     private static AlertDialog wonDialog;
     private static Button mySmileyButton;
+    private static  Button myActionButton;
+    private static Button myHintButton;
     public static Vibrator vibe;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,43 +60,42 @@ public class GameActivity extends AppCompatActivity {
     public static void updateSmileyButton(int id){
         mySmileyButton.setBackgroundResource(id);
     }
-    private void createHintButton(){
-        Button myHintButton= findViewById(R.id.myHintButton);
-        myHintButton.setBackgroundResource(Constants.TOOLBAR_MINE);
-        myHintButton.setOnClickListener(new View.OnClickListener() {
+    private void createActionButton(){
+        myActionButton= findViewById(R.id.myActionButton);
+        myActionButton.setBackgroundResource(Constants.TOOLBAR_MINE);
+        myActionButton.setTag(Constants.TOOLBAR_MINE);
+        myActionButton.setOnClickListener(new View.OnClickListener() {
             private int currentImage=Constants.TOOLBAR_MINE;
-            private Button hintButton= findViewById(R.id.myHintButton);
+            private Button hintButton= findViewById(R.id.myActionButton);
             @Override
             public void onClick(View v) {
                 if (v == hintButton) {
-                    if(currentImage== Constants.TOOLBAR_MINE){
-                        currentImage= Constants.TOOLBAR_FLAG;
-                        v.setBackgroundResource(currentImage);
+                    if(currentImage== Constants.TOOLBAR_MINE) {
+                        currentImage = Constants.TOOLBAR_FLAG;
                     }
                     else if (currentImage == Constants.TOOLBAR_FLAG) {
                         currentImage = Constants.TOOLBAR_QUESTION;
-                        v.setBackgroundResource(currentImage);
                     }
                     else if(currentImage== Constants.TOOLBAR_QUESTION){
-                        currentImage= Constants.TOOLBAR_HINT;
-                        v.setBackgroundResource(currentImage);
+                        currentImage= Constants.TOOLBAR_MINE;
                     }
-                    else if(currentImage==Constants.TOOLBAR_HINT){
-                        currentImage=Constants.TOOLBAR_MINE;
-                        v.setBackgroundResource(currentImage);
-                    }
+                    v.setTag(currentImage);
+                    v.setBackgroundResource(currentImage);
 
                 }
             }
         });
     }
-    public void createSettingsButton(){
-        Button mySettingsButton= findViewById(R.id.mySettingsButton);
-        mySettingsButton.setBackgroundResource(Constants.SETTING);
-        mySettingsButton.setOnClickListener(new View.OnClickListener() {
+    public void createHintButton(){
+        myHintButton= findViewById(R.id.myHintButton);
+        myHintButton.setBackgroundResource(Constants.TOOLBAR_HINT);
+        myHintButton.setTag(-1);
+        myHintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if((int)v.getTag()==-1){
+                    v.setTag(1);
+                }
             }
         });
     }
@@ -124,8 +125,17 @@ public class GameActivity extends AppCompatActivity {
     public void initToolBarButtons(){
         createSmiley();
         createHintButton();
-        createSettingsButton();
+        createActionButton();
 
+    }
+    public static int getActionButtonTag(){
+        return (int)myActionButton.getTag();
+    }
+    public static int getHintButtonTag(){
+        return (int) myHintButton.getTag();
+    }
+    public static void setHintButtonTag(){
+        myHintButton.setTag(0);
     }
 
 }

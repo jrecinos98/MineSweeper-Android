@@ -51,6 +51,17 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(toGame);
             }
         });
+        createSettingsButton();
 
+    }
+    public void createSettingsButton(){
+        Button myHintButton= findViewById(R.id.myHintButton);
+        myHintButton.setBackgroundResource(Constants.SETTING);
+        myHintButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 }

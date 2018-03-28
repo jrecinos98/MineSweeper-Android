@@ -20,6 +20,15 @@
         android:textStyle="italic" />
 
     <Button
+        android:id="@+id/myHintButton"
+        android:layout_width="45dp"
+        android:layout_height="35dp"
+        android:layout_above="@+id/playMessage"
+        android:layout_marginBottom="-57dp"
+        android:layout_toEndOf="@+id/playMessage"
+        android:paddingTop="0dp" />
+
+    <Button
         android:id="@+id/myMediumButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

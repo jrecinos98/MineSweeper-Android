@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 
 import com.example.recinos.myminesweepergame.Constants.Constants;
@@ -49,16 +50,31 @@ public class Grid extends GridView implements Serializable{
         this.setAdapter(myAdapter);
         instance=this;
         this.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            //Button hintButton=findViewById(R.id.myActionButton);
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(!firstClick){
+                if(!firstClick && GameActivity.getActionButtonTag()==Constants.TOOLBAR_MINE){
                     Generator.generateGrid(gameGrid,getMineNum(),position);
                     firstClick=true;
                 }
                 Cell temp= getCell(position);
                 if(GAME_STATE == Constants.GAME_STATE.PLAYING) {
                     if (!temp.isOpened()) {
-                        if (temp.isMine() && !temp.isFlagged()){
+                        if(GameActivity.getActionButtonTag()== Constants.TOOLBAR_FLAG){
+                            if(temp.isFlagged() && !temp.isQuestion()){
+                                temp.setToNormal();
+                            }
+                            else
+                                temp.setFlagged();
+                        }
+                        else if(GameActivity.getActionButtonTag()==Constants.TOOLBAR_QUESTION){
+                            if(temp.isQuestion()){
+                                temp.setToNormal();
+                            }
+                            else
+                                temp.setQuestion();
+                        }
+                        else if (temp.isMine() && !temp.isFlagged()){
                             temp.setAsClickedMine();
                             gameOver();
                         }
@@ -87,7 +103,7 @@ public class Grid extends GridView implements Serializable{
                         return false;
                     }
                     else
-                        temp.setNextFlagImage(temp);
+                        temp.setNextFlagImage();
                 }
                 if(Cell.cellsOpened== (getGridHeight()*getGridWidth())-mineNum){
                     GAME_STATE= Constants.GAME_STATE.WON;
@@ -100,6 +116,7 @@ public class Grid extends GridView implements Serializable{
         this.setOnTouchListener(new OnTouchListener(){
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                Button smileyButton= findViewById(R.id.smileyButton);
                 float currentXPosition = event.getX();
                 float currentYPosition = event.getY();
                 int position = instance.pointToPosition((int) currentXPosition, (int) currentYPosition);
@@ -113,6 +130,7 @@ public class Grid extends GridView implements Serializable{
                     return true;
                 }
                 if (GAME_STATE==Constants.GAME_STATE.PLAYING && event.getAction() == MotionEvent.ACTION_UP) {
+                    //smileyButton.setBackgroundResource(Constants.SMILEY_NORMAL);
                     GameActivity.updateSmileyButton(Constants.SMILEY_NORMAL);
                     for (int neighborPos : neighbors) {
                         int x = neighborPos % getGridWidth();
@@ -133,6 +151,7 @@ public class Grid extends GridView implements Serializable{
                             }
                         }
                         if(!temp.isOpened() || (temp.isOpened()&&  temp.getValue()!=0)) {
+                            //smileyButton.setBackgroundResource(Constants.SMILEY_SCARED);
                             GameActivity.updateSmileyButton(Constants.SMILEY_SCARED);
                         }
                     }

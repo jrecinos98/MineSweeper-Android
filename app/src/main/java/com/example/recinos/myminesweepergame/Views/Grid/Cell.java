@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Vibrator;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.recinos.myminesweepergame.GameActivity;
 import com.example.recinos.myminesweepergame.R;
@@ -23,6 +24,7 @@ public class Cell extends View {
     private boolean flagged;
     private boolean clickedMine;
     private boolean animate;
+    private boolean hintCell;
     private int x;
     private int y;
     private int currentImage;
@@ -30,10 +32,10 @@ public class Cell extends View {
     private static int FLAG= R.drawable.flagged;
     private static int QUESTION=R.drawable.question;
     private static int MINE= R.drawable.mine;
+    private static int HINT= R.drawable.nonbomb;
     private static int NORMAL= R.drawable.block;
     private static int CLICKED= R.drawable.clicked_bomb;
     int position;
-    private Vibrator vibe;
 
     private static Integer[] thumbnails = {
             R.drawable.empty, R.drawable.one, R.drawable.two, R.drawable.three,
@@ -74,7 +76,7 @@ public class Cell extends View {
             else
                 drawable= ContextCompat.getDrawable(getContext(),MINE);
         }
-       else if (this.isFlagged() && !this.isOpened()) {
+       else if ((this.isFlagged() && !this.isOpened()) || hintCell) {
             //currentImage=FLAG;
             drawable = ContextCompat.getDrawable(getContext(), currentImage);
         }
@@ -139,7 +141,8 @@ public class Cell extends View {
     }
     public void setToNormal(){
         animate=false;
-        invalidate();
+        currentImage=NORMAL;
+        this.unFlag();
     }
     public boolean getAnimate(){return animate;}
     public boolean isMine() {
@@ -153,6 +156,7 @@ public class Cell extends View {
         return flagged;
     }
     public void setFlagged() {
+        currentImage=FLAG;
         this.flagged = true;
         invalidate();
     }
@@ -175,7 +179,7 @@ public class Cell extends View {
         return x;
     }
     public int getPosition(){return position;}
-    public void setNextFlagImage(Cell temp){
+    public void setNextFlagImage(){
         if(currentImage==NORMAL){
             currentImage=FLAG;
             this.setFlagged();
@@ -188,6 +192,25 @@ public class Cell extends View {
             currentImage=NORMAL;
             this.unFlag();
         }
+    }
+    public void setQuestion(){
+        this.setFlagged();
+        currentImage=QUESTION;
+        invalidate();
+
+    }
+    public boolean isQuestion(){
+        if(currentImage==QUESTION){
+            return true;
+        }
+        return false;
+    }
+    public void setHintCell(){
+        hintCell=true;
+        isMine=false;
+        isOpened=true;
+        currentImage=HINT;
+        invalidate();
     }
 
 

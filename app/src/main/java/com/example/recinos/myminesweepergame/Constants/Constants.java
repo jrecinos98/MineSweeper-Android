@@ -13,9 +13,9 @@ public abstract class Constants {
         WON
     }
     public enum GAME_DIFFICULTY{
-        EASY(12,18,20,300),
-        MEDIUM(15,23,40,270),
-        HARD(20,30,80,300);
+        EASY(12,19,20,185),
+        MEDIUM(15,24,40,160),
+        HARD(20,32,80,160);
         private int width;
         private int height;
         private int mineNum;
@@ -41,6 +41,7 @@ public abstract class Constants {
     public static int TOOLBAR_MINE=R.drawable.toolbar_mine;
     public static int TOOLBAR_HINT=R.drawable.lightbulb;
     public static int SETTING= R.drawable.settings;
+
 
     //public static int CLOCK=R.drawable.
 }
