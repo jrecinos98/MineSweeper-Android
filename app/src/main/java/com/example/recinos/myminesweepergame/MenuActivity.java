@@ -16,7 +16,7 @@ import com.example.recinos.myminesweepergame.Constants.Constants;
  */
 
 public class MenuActivity extends AppCompatActivity {
-    Constants.GameDifficulty difficulty;
+    Constants.GAME_DIFFICULTY difficulty;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,8 +28,8 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent toGame= new Intent(getApplicationContext(),GameActivity.class);
-                difficulty=Constants.GameDifficulty.EASY;
-                toGame.putExtra("GameDifficulty", difficulty);
+                difficulty=Constants.GAME_DIFFICULTY.EASY;
+                toGame.putExtra("GAME_DIFFICULTY", difficulty);
                 startActivity(toGame);
             }
         });
@@ -37,8 +37,8 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent toGame= new Intent(getApplicationContext(),GameActivity.class);
-                difficulty=Constants.GameDifficulty.MEDIUM;
-                toGame.putExtra("GameDifficulty", difficulty);
+                difficulty=Constants.GAME_DIFFICULTY.MEDIUM;
+                toGame.putExtra("GAME_DIFFICULTY", difficulty);
                 startActivity(toGame);
             }
         });
@@ -46,8 +46,8 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent toGame= new Intent(getApplicationContext(),GameActivity.class);
-                difficulty=Constants.GameDifficulty.HARD;
-                toGame.putExtra("GameDifficulty", difficulty);
+                difficulty=Constants.GAME_DIFFICULTY.HARD;
+                toGame.putExtra("GAME_DIFFICULTY", difficulty);
                 startActivity(toGame);
             }
         });

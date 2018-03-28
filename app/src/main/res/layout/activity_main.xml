@@ -9,10 +9,10 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="100dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/empty"
+        android:background="@color/gridColor"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
@@ -22,6 +22,14 @@
             android:layout_height="wrap_content"
             android:padding="0dp"
             android:paddingEnd="0dp">
+
+            <Button
+                android:id="@+id/timer0"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="99dp" />
 
             <Button
                 android:id="@+id/mines0"
@@ -41,17 +49,24 @@
                 android:id="@+id/smileyButton"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_centerInParent="true" />
 
             <Button
-                android:id="@+id/timer0"
+                android:id="@+id/timer2"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginEnd="32dp" />
+                android:layout_marginEnd="33dp" />
+
+            <Button
+                android:id="@+id/timer3"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/timer2" />
 
             <Button
                 android:id="@+id/timer1"
@@ -59,7 +74,24 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:layout_toStartOf="@+id/timer0" />
+                android:layout_marginEnd="66dp" />
+
+            <Button
+                android:id="@+id/mySettingsButton"
+                android:layout_width="45dp"
+                android:layout_height="35dp"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/mines1"
+                android:paddingTop="0dp" />
+
+            <Button
+                android:id="@+id/myHintButton"
+                android:layout_width="45dp"
+                android:layout_height="35dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="11dp"
+                android:layout_toEndOf="@+id/mines1"
+                android:paddingBottom="5dp" />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
         

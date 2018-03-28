@@ -4,9 +4,11 @@ import android.content.Context;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Vibrator;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import com.example.recinos.myminesweepergame.GameActivity;
 import com.example.recinos.myminesweepergame.R;
 
 
@@ -20,16 +22,18 @@ public class Cell extends View {
     private boolean isOpened;
     private boolean flagged;
     private boolean clickedMine;
+    private boolean animate;
     private int x;
     private int y;
     private int currentImage;
     public static int cellsOpened=0;
-    private int FLAG= R.drawable.flagged;
-    private int QUESTION=R.drawable.question;
-    private int MINE= R.drawable.mine;
-    private int NORMAL= R.drawable.block;
-    private int CLICKED= R.drawable.clicked_bomb;
+    private static int FLAG= R.drawable.flagged;
+    private static int QUESTION=R.drawable.question;
+    private static int MINE= R.drawable.mine;
+    private static int NORMAL= R.drawable.block;
+    private static int CLICKED= R.drawable.clicked_bomb;
     int position;
+    private Vibrator vibe;
 
     private static Integer[] thumbnails = {
             R.drawable.empty, R.drawable.one, R.drawable.two, R.drawable.three,
@@ -60,7 +64,10 @@ public class Cell extends View {
     private void drawCell(Canvas canvas){
         Drawable drawable;
         //This is where long click glitch might be.
-        if(this.isMine() && this.isOpened()){
+        if(animate){
+            drawable= ContextCompat.getDrawable(getContext(),Cell.thumbnails[0]);
+        }
+        else if(this.isMine() && this.isOpened()){
             if(this.isClickedMine()){
                 drawable= ContextCompat.getDrawable(getContext(),CLICKED);
             }
@@ -127,6 +134,14 @@ public class Cell extends View {
             invalidate(); //invalidate view. After invalidation it gets redrawn (calls onDraw)
         }
     }
+    public void setAnimate(){
+        animate=true;
+    }
+    public void setToNormal(){
+        animate=false;
+        invalidate();
+    }
+    public boolean getAnimate(){return animate;}
     public boolean isMine() {
         return isMine;
     }
