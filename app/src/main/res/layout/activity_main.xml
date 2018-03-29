@@ -8,12 +8,14 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@color/gridColor"
         android:elevation="4dp"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
 
@@ -25,63 +27,62 @@
 
             <Button
                 android:id="@+id/timer0"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="99dp" />
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/timer1"
+                android:background="@drawable/clock_start" />
 
             <Button
                 android:id="@+id/mines0"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true" />
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
 
             <Button
                 android:id="@+id/mines1"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="32dp" />
+                android:layout_toEndOf="@+id/mines0" />
 
             <Button
                 android:id="@+id/smileyButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_centerInParent="true"
-                android:padding="5dp" />
+                android:layout_centerInParent="true" />
 
             <Button
                 android:id="@+id/timer2"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="33dp" />
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/timer3"
+                android:background="@drawable/clock_start" />
 
             <Button
                 android:id="@+id/timer3"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_toStartOf="@+id/timer2" />
+                android:layout_centerVertical="true"
+                android:background="@drawable/clock_start" />
 
             <Button
                 android:id="@+id/timer1"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="66dp" />
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/colonButton"
+                android:background="@drawable/clock_start" />
 
             <Button
                 android:id="@+id/myHintButton"
-                android:layout_width="40dp"
+                android:layout_width="38dp"
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/myActionButton"
+                android:layout_toStartOf="@+id/smileyButton"
                 android:paddingTop="0dp" />
 
             <Button
@@ -89,8 +90,23 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/mines1"
+                android:layout_toEndOf="@+id/mine2"
                 android:paddingBottom="5dp" />
+
+            <Button
+                android:id="@+id/colonButton"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/timer2"
+                android:background="@drawable/clock_dash" />
+
+            <Button
+                android:id="@+id/mine2"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/mines1" />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
         

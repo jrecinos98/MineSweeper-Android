@@ -157,10 +157,13 @@ public class Cell extends View {
     }
     public void setFlagged() {
         currentImage=FLAG;
+        if(!isQuestion() && !isFlagged())
+            GameActivity.mineCounter.decreaseMineNum();
         this.flagged = true;
         invalidate();
     }
     public void unFlag(){
+        GameActivity.mineCounter.increaseMineNum();
         this.flagged=false;
         invalidate();
     }

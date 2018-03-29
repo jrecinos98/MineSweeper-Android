@@ -71,8 +71,9 @@ public class Grid extends GridView implements Serializable{
                             if(temp.isQuestion()){
                                 temp.setToNormal();
                             }
-                            else
+                            else {
                                 temp.setQuestion();
+                            }
                         }
                         else if (temp.isMine() && !temp.isFlagged()){
                             temp.setAsClickedMine();

@@ -2,14 +2,19 @@ package com.example.recinos.myminesweepergame;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
@@ -22,14 +27,19 @@ public class GameActivity extends AppCompatActivity {
     public static Constants.GAME_DIFFICULTY difficulty;
     public static Constants.GAME_STATE GAME_STATE;
     private static AlertDialog wonDialog;
+
     private static Button mySmileyButton;
     private static  Button myActionButton;
     private static Button myHintButton;
     public static Vibrator vibe;
+
+    private static Clock gameTimer;
+    public static MineCounter mineCounter;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         difficulty = (Constants.GAME_DIFFICULTY) getIntent().getSerializableExtra("GAME_DIFFICULTY");
         GAME_STATE= Constants.GAME_STATE.PLAYING;
+        gameTimer=new Clock();
         setContentView(R.layout.activity_main);
         setToolBarHeight(difficulty.getToolBarHeight());
         initToolBarButtons();
@@ -99,6 +109,9 @@ public class GameActivity extends AppCompatActivity {
             }
         });
     }
+    public void createMineCounter(){
+        mineCounter= new MineCounter(GameActivity.difficulty.getMineNum());
+    }
     public static void showWonDialog(){
         wonDialog.show();
     }
@@ -126,6 +139,7 @@ public class GameActivity extends AppCompatActivity {
         createSmiley();
         createHintButton();
         createActionButton();
+        createMineCounter();
 
     }
     public static int getActionButtonTag(){
@@ -136,6 +150,78 @@ public class GameActivity extends AppCompatActivity {
     }
     public static void setHintButtonTag(){
         myHintButton.setTag(0);
+    }
+    public class Clock implements Runnable{
+        volatile boolean playing;
+        Button timer0= findViewById(R.id.timer0);
+        Button timer1= findViewById(R.id.timer1);
+        @Override
+        public void run() {
+
+        }
+    }
+    public class MineCounter{
+        private Button mine0Button;
+        private Button mine1Button;
+        private Button mine2Button;
+        int startMineNum;
+        int newMineNum;
+        MineCounter(int mineNum){
+            this.startMineNum=mineNum;
+            this.newMineNum=mineNum;
+            //determines value at 100th place
+            int hundred= mineNum/100;
+            //determines value at 10th place
+            int tenth=(mineNum-(hundred*100))/10;
+            //determines value at 1st place
+            int digit= (mineNum-(hundred*100)-(tenth*10));
+            mine0Button=findViewById(R.id.mines0);
+            mine0Button.setBackgroundResource(Constants.getClockImage(hundred));
+
+            mine1Button=findViewById(R.id.mines1);
+            mine1Button.setBackgroundResource(Constants.getClockImage(tenth));
+
+            mine2Button=findViewById(R.id.mine2);
+            mine2Button.setBackgroundResource(Constants.getClockImage(digit));
+        }
+        public void decreaseMineNum(){
+            if(newMineNum>0) {
+                newMineNum--;
+                //determines value at 100th place
+                int hundred= newMineNum/100;
+                //determines value at 10th place
+                int tenth=(newMineNum-(hundred*100))/10;
+                //determines value at 1st place
+                int digit= (newMineNum-(hundred*100)-(tenth*10));
+                mine0Button=findViewById(R.id.mines0);
+                mine0Button.setBackgroundResource(Constants.getClockImage(hundred));
+
+                mine1Button=findViewById(R.id.mines1);
+                mine1Button.setBackgroundResource(Constants.getClockImage(tenth));
+
+                mine2Button=findViewById(R.id.mine2);
+                mine2Button.setBackgroundResource(Constants.getClockImage(digit));
+            }
+        }
+        public void increaseMineNum() {
+            if (newMineNum < startMineNum) {
+                newMineNum++;
+                //determines value at 100th place
+                int hundred = newMineNum / 100;
+                //determines value at 10th place
+                int tenth = (newMineNum - (hundred * 100)) / 10;
+                //determines value at 1st place
+                int digit = (newMineNum - (hundred * 100) - (tenth * 10));
+                mine0Button = findViewById(R.id.mines0);
+                mine0Button.setBackgroundResource(Constants.getClockImage(hundred));
+
+                mine1Button = findViewById(R.id.mines1);
+                mine1Button.setBackgroundResource(Constants.getClockImage(tenth));
+
+                mine2Button = findViewById(R.id.mine2);
+                mine2Button.setBackgroundResource(Constants.getClockImage(digit));
+            }
+        }
     }
 
 }

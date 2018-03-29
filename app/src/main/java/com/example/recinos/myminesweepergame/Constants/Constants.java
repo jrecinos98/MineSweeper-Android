@@ -15,7 +15,7 @@ public abstract class Constants {
     public enum GAME_DIFFICULTY{
         EASY(12,19,20,185),
         MEDIUM(15,24,40,160),
-        HARD(20,32,80,160);
+        HARD(20,32,105,160);
         private int width;
         private int height;
         private int mineNum;
@@ -42,6 +42,16 @@ public abstract class Constants {
     public static int TOOLBAR_HINT=R.drawable.lightbulb;
     public static int SETTING= R.drawable.settings;
 
-
-    //public static int CLOCK=R.drawable.
+    private static Integer[] CLOCK_IMAGES={
+            R.drawable.clock_zero,R.drawable.clock_one,R.drawable.clock_two, R.drawable.clock_three,
+            R.drawable.clock_four, R.drawable.clock_five, R.drawable.clock_six, R.drawable.clock_seven,
+            R.drawable.clock_eight, R.drawable.clock_nine,
+    };
+    public static int getClockImage(int value){
+        if(value>=0 && value<10){
+            return CLOCK_IMAGES[value];
+        }
+        else
+            return R.drawable.clock_start;
+    }
 }
