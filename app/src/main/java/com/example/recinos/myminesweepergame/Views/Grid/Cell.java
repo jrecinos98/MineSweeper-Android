@@ -141,8 +141,16 @@ public class Cell extends View {
     }
     public void setToNormal(){
         animate=false;
-        currentImage=NORMAL;
-        this.unFlag();
+        //currentImage=NORMAL;
+        //this.unFlag();
+
+        //has to be unflagged to get rid of a flag or question when their action button is active. See Grid onClickListener()
+       // this.flagged=false;
+        invalidate();
+    }
+    //Used in Grid.onClickListener() method . FIX LATER!!
+    public void unFlagClick(){
+        flagged=false;
     }
     public boolean getAnimate(){return animate;}
     public boolean isMine() {

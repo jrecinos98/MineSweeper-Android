@@ -69,6 +69,7 @@ public class Grid extends GridView implements Serializable{
                         }
                         else if(GameActivity.getActionButtonTag()==Constants.TOOLBAR_QUESTION){
                             if(temp.isQuestion()){
+                                temp.unFlagClick();
                                 temp.setToNormal();
                             }
                             else {
@@ -126,7 +127,7 @@ public class Grid extends GridView implements Serializable{
                 }
                 Cell temp= getCell(position);
                 ArrayList<Integer> neighbors= Finder.findNeighborPositions(temp.getXPos(),temp.getYPos(),gameGrid);
-                Log.d("Event",event.toString());
+                //Log.d("Event",event.toString());
                 if(event.getAction() == MotionEvent.ACTION_MOVE){
                     return true;
                 }
@@ -137,6 +138,7 @@ public class Grid extends GridView implements Serializable{
                         int x = neighborPos % getGridWidth();
                         int y = neighborPos / getGridWidth();
                         if (gameGrid[x][y].getAnimate()) {
+                            //screws with mineCounter
                             gameGrid[x][y].setToNormal();
                         }
                     }
