@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.recinos.myminesweepergame.Constants.Constants;
+import com.example.recinos.myminesweepergame.Views.Grid.Grid;
 
 
 /**
@@ -24,6 +26,7 @@ public class MenuActivity extends AppCompatActivity {
         Button myEasyButton = findViewById(R.id.myEasyButton);
         Button myMediumButton=  findViewById(R.id.myMediumButton);
         Button myHardButton= findViewById(R.id.myHardButton);
+        Button myLoadButton= findViewById(R.id.myLoadButton);
         myEasyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +54,21 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(toGame);
             }
         });
+        myLoadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Grid.saveExist()){
+                    Intent toGame= new Intent(getApplicationContext(),GameActivity.class);
+                    difficulty=Constants.GAME_DIFFICULTY.LOAD;
+                    toGame.putExtra("GAME_DIFFICULTY",difficulty);
+                    startActivity(toGame);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "No Save File Exists", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         createSettingsButton();
 
     }
@@ -60,7 +78,8 @@ public class MenuActivity extends AppCompatActivity {
         myHintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent settingsIntent= new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(settingsIntent);
             }
         });
     }

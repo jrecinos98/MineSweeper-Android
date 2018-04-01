@@ -2,20 +2,25 @@ package com.example.recinos.myminesweepergame.Constants;
 
 import com.example.recinos.myminesweepergame.R;
 
+import java.io.Serializable;
+
 /**
  * Created by recinos on 3/23/18.
  */
 
-public abstract class Constants {
+public abstract class Constants implements Serializable {
     public enum GAME_STATE{
         PLAYING,
         LOST,
-        WON
+        WON,
+        NOT_STARTED
     }
     public enum GAME_DIFFICULTY{
         EASY(12,19,20,185),
         MEDIUM(15,24,40,160),
-        HARD(20,32,105,160);
+        HARD(20,32,105,160),
+        LOAD(0,0,0,0);
+
         private int width;
         private int height;
         private int mineNum;

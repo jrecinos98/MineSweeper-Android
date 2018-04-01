@@ -1,5 +1,6 @@
 package com.example.recinos.myminesweepergame.util;
 
+import com.example.recinos.myminesweepergame.GameActivity;
 import com.example.recinos.myminesweepergame.Views.Grid.Cell;
 import com.example.recinos.myminesweepergame.Views.Grid.Grid;
 
@@ -22,7 +23,7 @@ public abstract class Finder {
             //temp.open();
             //grid.addVisibleCell(temp);
             if (temp.getValue() == 0) {
-                surroundingCells(grid, temp.getXPos(), temp.getYPos());
+                surroundingCells(grid, temp.getRow(), temp.getCol());
             }
         }
     }
@@ -34,33 +35,35 @@ public abstract class Finder {
      */
     private static void surroundingCells(Grid grid, final int row, final int column){
         //If cell is not on edge then use passed values.
-        int xStart=row-1;
-        int xEnd=row+1;
-        int yStart=column-1;
-        int yEnd=column+1;
+        int rowStart=row-1;
+        int rowEnd=row+1;
+        int colStart=column-1;
+        int colEnd=column+1;
         //if the cell is on the left edge.
-        if (xStart <0){
-            xStart=row;
+        if (rowStart <0){
+            rowStart=row;
         }
         //if the cell is in the right edge.
-        else if(xEnd > grid.getGridWidth()-1){
-            xEnd=row;
+        else if(rowEnd > grid.getGridWidth()-1){
+            rowEnd=row;
         }
         //if the cell is in the top edge.
-        if (yStart < 0){
-            yStart=column;
+        if (colStart < 0){
+            colStart=column;
         }
         //if the cell is in the bottom edge.
-        else if(yEnd > grid.getGridHeight()-1){
-            yEnd=column;
+        else if(colEnd > grid.getGridHeight()-1){
+            colEnd=column;
         }
-        for(int k=xStart; k<=xEnd; k++){
-            for(int n=yStart; n<=yEnd; n++){
-                if(!grid.getCell(k,n).isMarked() && grid.getCell(k,n).getValue()==0) {
+        for(int k=rowStart; k<=rowEnd; k++){
+            for(int n=colStart; n<=colEnd; n++){
+                if(grid.getCell(k,n).isOpenable() && grid.getCell(k,n).getValue()==0) {
+                    GameActivity.incrementCorrectMoves();
                     grid.getCell(k,n).setOpened();
                     stack.push(grid.getCell(k, n));
                 }
-                else if (!grid.getCell(k,n).isMarked()){
+                else if (grid.getCell(k,n).isOpenable()){
+                    GameActivity.incrementCorrectMoves();
                     grid.getCell(k,n).setOpened();
                    // grid.addVisibleCell(grid.getCell(k,n));
                 }
@@ -70,29 +73,29 @@ public abstract class Finder {
     }
     public static ArrayList<Integer> findNeighborPositions(int row, int column, Cell[][] grid){
         //If cell is not on edge then use passed values.
-        int xStart=row-1;
-        int xEnd=row+1;
-        int yStart=column-1;
-        int yEnd=column+1;
+        int rowStart=row-1;
+        int rowEnd=row+1;
+        int colStart=column-1;
+        int colEnd=column+1;
         ArrayList<Integer> neighborPositions = new ArrayList<>();
         //if the cell is on the left edge.
-        if (xStart <0){
-            xStart=row;
+        if (rowStart <0){
+            rowStart=row;
         }
         //if the cell is in the right edge.
-        else if(xEnd > grid.length-1){
-            xEnd=row;
+        else if(rowEnd > grid.length-1){
+            rowEnd=row;
         }
         //if the cell is in the top edge.
-        if (yStart < 0){
-            yStart=column;
+        if (colStart < 0){
+            colStart=column;
         }
         //if the cell is in the bottom edge.
-        else if(yEnd > grid[0].length-1){
-            yEnd=column;
+        else if(colEnd > grid[0].length-1){
+            colEnd=column;
         }
-        for(int k=xStart; k<=xEnd; k++) {
-            for (int n = yStart; n <= yEnd; n++) {
+        for(int k=rowStart; k<=rowEnd; k++) {
+            for (int n = colStart; n <= colEnd; n++) {
                 neighborPositions.add(k+(n * grid.length));
             }
         }
@@ -110,30 +113,31 @@ public abstract class Finder {
         }
         stack.push(cell);
     }
-    public static void mineFinder(Cell[][] grid, final int width, final int height){
+    public static void mineFinder(Cell[][] grid, final int row, final int column){
         //if mine is not in a corner or edge the default values defined below will be used.
-        int xStart=width-1;
-        int xEnd=width+1;
-        int yStart=height-1;
-        int yEnd=height+1;
-        //if the mine is on the left edge.
-        if (xStart <0){
-            xStart=width;
+        //If cell is not on edge then use passed values.
+        int rowStart=row-1;
+        int rowEnd=row+1;
+        int colStart=column-1;
+        int colEnd=column+1;
+        //if the cell is on the left edge.
+        if (rowStart <0){
+            rowStart=row;
         }
-        //if the mine is in the right edge.
-        else if(xEnd > grid.length-1){
-            xEnd=width;
+        //if the cell is in the right edge.
+        else if(rowEnd > grid.length-1){
+            rowEnd=row;
         }
-        //if the mine is in the top edge.
-        if (yStart < 0){
-            yStart=height;
+        //if the cell is in the top edge.
+        if (colStart < 0){
+            colStart=column;
         }
-        //if the mine is in the bottom edge.
-        else if(yEnd > grid[width].length-1){
-            yEnd=height;
+        //if the cell is in the bottom edge.
+        else if(colEnd > grid[0].length-1){
+            colEnd=column;
         }
-        for(int k=xStart; k<=xEnd; k++){
-            for(int n=yStart; n<=yEnd; n++){
+        for(int k=rowStart; k<=rowEnd; k++){
+            for(int n=colStart; n<=colEnd; n++){
                 if(!grid[k][n].isMine()){
                     grid[k][n].increment();
                 }

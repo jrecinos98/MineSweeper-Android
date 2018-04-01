@@ -50,9 +50,18 @@
         android:id="@+id/myHardButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/myEasyButton"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="88dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="128dp"
         android:text="Hard Game" />
+
+    <Button
+        android:id="@+id/myLoadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="61dp"
+        android:text="Load Game" />
 
 </RelativeLayout>
