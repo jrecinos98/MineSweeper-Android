@@ -50,11 +50,6 @@ public class GameActivity extends AppCompatActivity {
         difficulty = (Constants.GAME_DIFFICULTY) getIntent().getSerializableExtra("GAME_DIFFICULTY");
         GAME_STATE= Constants.GAME_STATE.NOT_STARTED;
         int ToolBarHeight= difficulty.getToolBarHeight();
-        if(difficulty==Constants.GAME_DIFFICULTY.LOAD){
-            Grid.Save save = Grid.loadPreviousGame(getApplicationContext());
-            ToolBarHeight=save.getToolBarHeight();
-            time= save.getTime();
-        }
         vibe= (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         setContentView(R.layout.activity_main);
         initToolBarButtons();
@@ -62,6 +57,12 @@ public class GameActivity extends AppCompatActivity {
         initWonDialog();
         initWarningDialog();
         setToolBarHeight(ToolBarHeight);
+    }
+    protected  void onPause(){
+        super.onPause();
+        wonDialog.dismiss();
+
+
     }
     public static void incrementCorrectMoves(){
         correctMoves++;
@@ -228,6 +229,8 @@ public class GameActivity extends AppCompatActivity {
         yesButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                GameActivity.resetCorrectMoves();
+                warningDialog.dismiss();
                 recreate();
             }
         });

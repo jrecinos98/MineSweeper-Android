@@ -40,7 +40,7 @@ public class Grid extends GridView implements Serializable{
 
 
     private Constants.GAME_DIFFICULTY GAME_DIFFICULTY;
-    private Context gameContext;
+    private transient Context gameContext;
 
     private int mineNum;
     private int flagNum;
@@ -49,10 +49,6 @@ public class Grid extends GridView implements Serializable{
     public Grid(Context context, AttributeSet attrs) {
         super(context, attrs);
         GAME_DIFFICULTY=GameActivity.difficulty;
-        if(GAME_DIFFICULTY==Constants.GAME_DIFFICULTY.LOAD){
-            instance= Save.getInstance().getSaveGrid();
-            return;
-        }
         mineNum=getMineNum();
         flagNum=getMineNum();
         gameContext=context;
@@ -79,7 +75,12 @@ public class Grid extends GridView implements Serializable{
                                 temp.showAsHintMine();
                             }
                             else{
-                                handleValueCell(temp);
+                                if(temp.getValue() == 0 && temp.isOpenable()){
+                                    handleCellEmpty(position);
+                                }
+                                else {
+                                    handleValueCell(temp);
+                                }
                             }
                         }
                         else if (temp.isMine() && temp.isOpenable()){
@@ -136,7 +137,7 @@ public class Grid extends GridView implements Serializable{
                 Cell temp= getCell(position);
                 ArrayList<Integer> neighbors= Finder.findNeighborPositions(temp.getRow(),temp.getCol(),gameGrid);
                 if(event.getAction() == MotionEvent.ACTION_MOVE){
-                    return true;
+                    //return true;
                 }
                 handleAnimation(event,neighbors,temp);
                 return false; }
@@ -315,6 +316,7 @@ public class Grid extends GridView implements Serializable{
         GameActivity.GAME_STATE= Constants.GAME_STATE.LOST;
         GameActivity.updateSmileyButton(Constants.SMILEY_DEAD);
         revealMines();
+        save();
     }
     /**
      * called when a user wins the game.
@@ -338,7 +340,7 @@ public class Grid extends GridView implements Serializable{
         try {
             FileOutputStream fileOutputStream = gameContext.openFileOutput("GameSave.ser", Context.MODE_PRIVATE);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(Save.getInstance());
+            objectOutputStream.writeObject(this);
             objectOutputStream.close();
             fileOutputStream.close();
         } catch (IOException e) {
@@ -380,7 +382,7 @@ public class Grid extends GridView implements Serializable{
      * @return true if save file exists and false otherwise
      */
     public static boolean saveExist(){
-        if (new File("MyGame.ser").isFile()){
+        if (new File("MyGame.ser").exists()){
             return true;
         }
         return false;
@@ -411,31 +413,4 @@ public class Grid extends GridView implements Serializable{
             return convertView;
         }
     }
-    public static class Save implements Serializable{
-        private static Save saveInstance;
-        private Grid saveGrid;
-        private int time;
-        private Save(){
-            saveGrid=instance;
-            time=GameActivity.time;
-            saveInstance=this;
-        }
-        public static Save getInstance() {
-            if(saveInstance==null){
-                return new Save();
-            }
-            return saveInstance;
-        }
-        public Grid getSaveGrid(){
-            return saveGrid;
-        }
-        public int getTime(){return time;}
-        public Constants.GAME_DIFFICULTY getDifficulty(){
-            return saveGrid.getDifficulty();
-        }
-        public int getToolBarHeight(){
-            return getDifficulty().getToolBarHeight();
-        }
-    }
-
 }
