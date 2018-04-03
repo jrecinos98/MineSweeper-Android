@@ -407,10 +407,7 @@ public class Grid extends GridView implements Serializable{
             return 0;
         }
         public View getView(int position, View convertView, ViewGroup parent) {
-            if(convertView==null){
-                convertView=getCell(position);
-            }
-            return convertView;
+            return getCell(position);
         }
     }
 }

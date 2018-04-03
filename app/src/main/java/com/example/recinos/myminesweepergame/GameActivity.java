@@ -12,11 +12,8 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.example.recinos.myminesweepergame.Constants.Constants;
-import com.example.recinos.myminesweepergame.Views.Grid.Grid;
 import com.example.recinos.myminesweepergame.Views.Toolbar.MineCounter;
 import com.example.recinos.myminesweepergame.Views.Toolbar.GameClock;
-
-import java.time.Clock;
 
 
 @SuppressWarnings("ClickableViewAccessibility")
@@ -213,7 +210,7 @@ public class GameActivity extends AppCompatActivity {
     public void initWonDialog(){
 
         AlertDialog.Builder wonBuilder= new AlertDialog.Builder(GameActivity.this);
-        final View wonView= getLayoutInflater().inflate(R.layout.dialog_custom_won,null);
+        final View wonView= getLayoutInflater().inflate(R.layout.dialog_won,null);
         wonBuilder.setView(wonView);
         wonDialog = wonBuilder.create();
     }
@@ -222,7 +219,7 @@ public class GameActivity extends AppCompatActivity {
         // Because if we dont specify mview then the widgets will be
         // searched for in activity_main.xml and they are not there.
         AlertDialog.Builder warningBuilder= new AlertDialog.Builder(GameActivity.this);
-        final View warningView= getLayoutInflater().inflate(R.layout.dialog_custom,null);
+        final View warningView= getLayoutInflater().inflate(R.layout.dialog_warning,null);
         warningBuilder.setView(warningView);
         warningDialog= warningBuilder.create();
         Button yesButton= warningView.findViewById(R.id.myYesButton);

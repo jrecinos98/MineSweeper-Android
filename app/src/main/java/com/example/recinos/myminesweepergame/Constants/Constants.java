@@ -19,7 +19,8 @@ public abstract class Constants implements Serializable {
         EASY(12,19,20,185),
         MEDIUM(15,24,40,160),
         HARD(20,32,105,160),
-        LOAD(0,0,0,0);
+        LOAD(0,0,0,0),
+        CUSTOM(0,0,0,160);
 
         private int width;
         private int height;
@@ -35,19 +36,22 @@ public abstract class Constants implements Serializable {
         public int getHeight(){return height;}
         public int getMineNum(){return mineNum;}
         public int getToolBarHeight(){return toolBarHeight;}
+        public void setEnumWidth(int w){width=w;}
+        public void setEnumHeight(int h){height=h;}
+        public void setMineNum(int m){mineNum=m;}
     }
-    public static int SMILEY_NORMAL= R.drawable.normal;
-    public static int SMILEY_RESET=R.drawable.reset;
-    public static int SMILEY_SCARED=R.drawable.scared;
-    public static int SMILEY_DEAD=R.drawable.dead;
+    public final static int SMILEY_NORMAL= R.drawable.normal;
+    public final static int SMILEY_RESET=R.drawable.reset;
+    public final static int SMILEY_SCARED=R.drawable.scared;
+    public final static int SMILEY_DEAD=R.drawable.dead;
 
-    public static int TOOLBAR_FLAG= R.drawable.toolbar_flag;
-    public static int TOOLBAR_QUESTION= R.drawable.toolbar_question;
-    public static int TOOLBAR_MINE=R.drawable.toolbar_mine;
-    public static int TOOLBAR_HINT=R.drawable.lightbulb;
-    public static int SETTING= R.drawable.settings;
+    public final static int TOOLBAR_FLAG= R.drawable.toolbar_flag;
+    public final static int TOOLBAR_QUESTION= R.drawable.toolbar_question;
+    public final static int TOOLBAR_MINE=R.drawable.toolbar_mine;
+    public final static int TOOLBAR_HINT=R.drawable.lightbulb;
+    public final static int SETTING= R.drawable.settings;
 
-    private static Integer[] CLOCK_IMAGES={
+    private final static Integer[] CLOCK_IMAGES={
             R.drawable.clock_zero,R.drawable.clock_one,R.drawable.clock_two, R.drawable.clock_three,
             R.drawable.clock_four, R.drawable.clock_five, R.drawable.clock_six, R.drawable.clock_seven,
             R.drawable.clock_eight, R.drawable.clock_nine,
