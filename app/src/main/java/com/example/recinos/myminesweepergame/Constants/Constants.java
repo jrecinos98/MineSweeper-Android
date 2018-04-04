@@ -16,7 +16,7 @@ public abstract class Constants implements Serializable {
         NOT_STARTED
     }
     public enum GAME_DIFFICULTY{
-        EASY(12,19,20,185),
+        EASY(12,19,20,160),
         MEDIUM(15,24,40,160),
         HARD(20,32,105,160),
         LOAD(0,0,0,0),
@@ -39,11 +39,13 @@ public abstract class Constants implements Serializable {
         public void setEnumWidth(int w){width=w;}
         public void setEnumHeight(int h){height=h;}
         public void setMineNum(int m){mineNum=m;}
+        public void setToolBarHeight(int t){toolBarHeight=t;}
     }
     public final static int SMILEY_NORMAL= R.drawable.normal;
     public final static int SMILEY_RESET=R.drawable.reset;
     public final static int SMILEY_SCARED=R.drawable.scared;
     public final static int SMILEY_DEAD=R.drawable.dead;
+    public final static int SMILEY_WON=R.drawable.won;
 
     public final static int TOOLBAR_FLAG= R.drawable.toolbar_flag;
     public final static int TOOLBAR_QUESTION= R.drawable.toolbar_question;

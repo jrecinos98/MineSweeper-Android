@@ -17,13 +17,16 @@
         android:paddingEnd="5dp"
         android:paddingStart="5dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+        android:layout_alignParentLeft="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="0dp"
-            android:paddingEnd="0dp">
+            android:paddingEnd="0dp"
+            android:paddingRight="0dp"
+            android:paddingLeft="0dp">
 
             <Button
                 android:id="@+id/timer0"
@@ -31,21 +34,23 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/timer1"
-             />
+                android:layout_toLeftOf="@+id/timer1" />
 
             <Button
                 android:id="@+id/mines0"
                 android:layout_width="25dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true" />
 
             <Button
                 android:id="@+id/mines1"
                 android:layout_width="25dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/mines0" />
+                android:layout_toEndOf="@+id/mines0"
+                android:layout_toRightOf="@+id/mines0" />
 
             <Button
                 android:id="@+id/smileyButton"
@@ -59,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/timer3"
-              />
+                android:layout_toLeftOf="@+id/timer3" />
 
             <Button
                 android:id="@+id/timer3"
@@ -67,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-            />
+                android:layout_alignParentRight="true" />
 
             <Button
                 android:id="@+id/timer1"
@@ -75,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/colonButton"
-                />
+                android:layout_toLeftOf="@+id/colonButton" />
 
             <Button
                 android:id="@+id/myHintButton"
@@ -83,7 +88,8 @@
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/smileyButton"
-                android:paddingTop="0dp" />
+                android:paddingTop="0dp"
+                android:layout_toLeftOf="@+id/smileyButton" />
 
             <Button
                 android:id="@+id/myActionButton"
@@ -91,7 +97,8 @@
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/mine2"
-                android:paddingBottom="5dp" />
+                android:paddingBottom="5dp"
+                android:layout_toRightOf="@+id/mine2" />
 
             <Button
                 android:id="@+id/colonButton"
@@ -99,14 +106,16 @@
                 android:layout_height="47dp"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/timer2"
-                android:background="@drawable/clock_colon" />
+                android:background="@drawable/clock_colon"
+                android:layout_toLeftOf="@+id/timer2" />
 
             <Button
                 android:id="@+id/mine2"
                 android:layout_width="25dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/mines1" />
+                android:layout_toEndOf="@+id/mines1"
+                android:layout_toRightOf="@+id/mines1" />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
         
@@ -117,7 +126,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/my_toolbar"
         android:stretchMode="columnWidth"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        >
 
     </com.example.recinos.myminesweepergame.Views.Grid.Grid>
 

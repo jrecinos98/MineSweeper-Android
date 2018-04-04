@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="57dp"
+        android:layout_marginTop="150dp"
         android:text="Minesweeper"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"
-        android:textColor="@color/white"
+        android:textColor="@color/colorPrimary"
         android:textSize="36sp"
         android:textStyle="italic" />
 
@@ -23,9 +23,8 @@
         android:id="@+id/myHintButton"
         android:layout_width="45dp"
         android:layout_height="35dp"
-        android:layout_above="@+id/playMessage"
-        android:layout_marginBottom="-57dp"
-        android:layout_toEndOf="@+id/playMessage"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
         android:paddingTop="0dp" />
 
     <Button
@@ -34,7 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/myHardButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="29dp"
         android:text="Medium Game" />
 
     <Button
@@ -43,7 +41,6 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/myMediumButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="24dp"
         android:text="Easy Game" />
 
     <Button
@@ -52,25 +49,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="209dp"
+        android:layout_marginBottom="214dp"
         android:text="Hard Game" />
 
     <Button
         android:id="@+id/myLoadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/myCustomButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="64dp"
         android:text="Load Game" />
 
     <Button
         android:id="@+id/myCustomButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/myHardButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="137dp"
+        android:layout_marginTop="-214dp"
         android:text="Custom Game" />
 
 </RelativeLayout>

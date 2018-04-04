@@ -118,19 +118,19 @@ public class GameActivity extends AppCompatActivity {
             private Button hintButton= findViewById(R.id.myActionButton);
             @Override
             public void onClick(View v) {
-                if (v == hintButton) {
-                    if(currentImage== Constants.TOOLBAR_MINE) {
-                        currentImage = Constants.TOOLBAR_FLAG;
-                    }
-                    else if (currentImage == Constants.TOOLBAR_FLAG) {
-                        currentImage = Constants.TOOLBAR_QUESTION;
-                    }
-                    else if(currentImage== Constants.TOOLBAR_QUESTION){
-                        currentImage= Constants.TOOLBAR_MINE;
-                    }
-                    v.setTag(currentImage);
-                    v.setBackgroundResource(currentImage);
+                if(GameActivity.GAME_STATE==Constants.GAME_STATE.PLAYING) {
+                    if (v == hintButton) {
+                        if (currentImage == Constants.TOOLBAR_MINE) {
+                            currentImage = Constants.TOOLBAR_FLAG;
+                        } else if (currentImage == Constants.TOOLBAR_FLAG) {
+                            currentImage = Constants.TOOLBAR_QUESTION;
+                        } else if (currentImage == Constants.TOOLBAR_QUESTION) {
+                            currentImage = Constants.TOOLBAR_MINE;
+                        }
+                        v.setTag(currentImage);
+                        v.setBackgroundResource(currentImage);
 
+                    }
                 }
             }
         });
@@ -222,6 +222,7 @@ public class GameActivity extends AppCompatActivity {
         final View warningView= getLayoutInflater().inflate(R.layout.dialog_warning,null);
         warningBuilder.setView(warningView);
         warningDialog= warningBuilder.create();
+        warningDialog.setCanceledOnTouchOutside(false);
         Button yesButton= warningView.findViewById(R.id.myYesButton);
         yesButton.setOnClickListener(new View.OnClickListener(){
             @Override

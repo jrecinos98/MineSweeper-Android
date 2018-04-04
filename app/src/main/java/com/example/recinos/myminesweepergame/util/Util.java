@@ -1,5 +1,7 @@
 package com.example.recinos.myminesweepergame.util;
 import android.content.Context;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -12,7 +14,7 @@ import java.util.Random;
 /**
  * Created by recinos on 2/5/18.
  */
-public class Generator {
+public class Util {
     public static Cell[][] generateInitial(Context context,int width,int height){
         Cell[][] grid = new Cell[width][height];
         for (int row = 0; row < width; row++) {
@@ -40,4 +42,9 @@ public class Generator {
         }
 
     }
+    public static int convertDpToPixel(float dp){
+            DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+            float px = dp * (metrics.densityDpi / 160f);
+            return Math.round(px);
+        }
 }

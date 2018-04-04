@@ -16,8 +16,9 @@ import android.widget.GridView;
 import com.example.recinos.myminesweepergame.Constants.Constants;
 import com.example.recinos.myminesweepergame.GameActivity;
 import com.example.recinos.myminesweepergame.R;
-import com.example.recinos.myminesweepergame.util.Generator;
+import com.example.recinos.myminesweepergame.util.Util;
 import com.example.recinos.myminesweepergame.util.Finder;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,7 +54,7 @@ public class Grid extends GridView implements Serializable{
         flagNum=getMineNum();
         gameContext=context;
         setNumColumns(getGridWidth());
-        gameGrid = Generator.generateInitial(context,getGridWidth(),getGridHeight());
+        gameGrid = Util.generateInitial(context,getGridWidth(),getGridHeight());
         myAdapter= new GridAdapter();
         setAdapter(myAdapter);
         instance=this;
@@ -230,7 +231,7 @@ public class Grid extends GridView implements Serializable{
      */
     private void handleFirstClick(int position){
         if(GameActivity.getActionButtonTag()==Constants.TOOLBAR_MINE){
-            Generator.generateGrid(gameGrid,getMineNum(),position);
+            Util.generateGrid(gameGrid,getMineNum(),position);
             GameActivity.GAME_STATE=Constants.GAME_STATE.PLAYING;
             GameActivity.timerHandler.postDelayed(GameActivity.gameTimer,0);
         }
@@ -323,6 +324,7 @@ public class Grid extends GridView implements Serializable{
      */
     private void gameWon(){
         GameActivity.GAME_STATE= Constants.GAME_STATE.WON;
+        GameActivity.updateSmileyButton(Constants.SMILEY_WON);
         GameActivity.showWonDialog();
     }
 
