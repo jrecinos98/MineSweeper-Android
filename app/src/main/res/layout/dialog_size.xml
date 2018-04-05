@@ -5,17 +5,16 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#A9A9A9"
-    android:paddingBottom="100dp"
+    android:paddingBottom="50dp"
     >
 
     <SeekBar
         android:id="@+id/mySeekBar"
         android:layout_width="381dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="165dp"
         android:max="100"
         android:progress="50" />
 
@@ -23,18 +22,17 @@
         android:id="@+id/mySizeGrid"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="118dp"
+        android:layout_centerInParent="true"
         android:numColumns="3" />
 
     <Button
         android:id="@+id/customStartButton"
+        android:background="@drawable/round_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="0dp"
+        android:layout_marginBottom="21dp"
         android:text="Play Game!" />
 
     <SeekBar
@@ -63,7 +61,8 @@
         android:layout_above="@+id/customStartButton"
         android:layout_alignStart="@+id/seekBar2"
         android:text="Easy"
-        android:visibility="visible" />
+        android:visibility="visible"
+        android:layout_alignLeft="@+id/seekBar2" />
 
     <TextView
         android:id="@+id/textView2"
@@ -71,7 +70,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/customStartButton"
         android:layout_alignEnd="@+id/seekBar2"
-        android:text="Hard" />
+        android:text="Hard"
+        android:layout_alignRight="@+id/seekBar2" />
 
     <TextView
         android:id="@+id/textView4"
@@ -79,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="121dp"
         android:text="Select Grid Size &amp; Difficulty"
         android:textSize="24sp"
         android:visibility="visible" />

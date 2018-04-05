@@ -1,8 +1,8 @@
-package com.example.recinos.myminesweepergame.Views.Toolbar;
+package com.game.recinos.myminesweepergame.Views.Toolbar;
 
 import android.widget.Button;
 
-import com.example.recinos.myminesweepergame.Constants.Constants;
+import com.game.recinos.myminesweepergame.Constants.Constants;
 
 
 /**

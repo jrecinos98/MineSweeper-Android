@@ -1,4 +1,4 @@
-package com.example.recinos.myminesweepergame;
+package com.game.recinos.myminesweepergame;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

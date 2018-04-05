@@ -1,4 +1,4 @@
-package com.example.recinos.myminesweepergame.Views.Grid;
+package com.game.recinos.myminesweepergame.Views.Grid;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,11 +13,11 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 
-import com.example.recinos.myminesweepergame.Constants.Constants;
-import com.example.recinos.myminesweepergame.GameActivity;
-import com.example.recinos.myminesweepergame.R;
-import com.example.recinos.myminesweepergame.util.Util;
-import com.example.recinos.myminesweepergame.util.Finder;
+import com.game.recinos.myminesweepergame.Constants.Constants;
+import com.game.recinos.myminesweepergame.GameActivity;
+import com.game.recinos.myminesweepergame.R;
+import com.game.recinos.myminesweepergame.util.Util;
+import com.game.recinos.myminesweepergame.util.Finder;
 
 
 import java.io.File;
@@ -45,7 +45,6 @@ public class Grid extends GridView implements Serializable{
 
     private int mineNum;
     private int flagNum;
-    private transient GridAdapter myAdapter;
     @SuppressLint("ClickableViewAccessibility")
     public Grid(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -55,94 +54,7 @@ public class Grid extends GridView implements Serializable{
         gameContext=context;
         setNumColumns(getGridWidth());
         gameGrid = Util.generateInitial(context,getGridWidth(),getGridHeight());
-        myAdapter= new GridAdapter();
-        setAdapter(myAdapter);
         instance=this;
-        instance.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            //Button hintButton=findViewById(R.id.myActionButton);
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cell temp= getCell(position);
-                if(GameActivity.GAME_STATE == Constants.GAME_STATE.NOT_STARTED){
-                    handleFirstClick(position);
-                }
-                if(GameActivity.GAME_STATE == Constants.GAME_STATE.PLAYING) {
-                    if (!temp.isOpened()) {
-                        if(isActionButtonActive()){
-                            handleActionButton(temp);
-                        }
-                        else if(GameActivity.getHintButtonTag()==1 && temp.isOpenable()){
-                            if(temp.isMine()){
-                                temp.showAsHintMine();
-                            }
-                            else{
-                                if(temp.getValue() == 0 && temp.isOpenable()){
-                                    handleCellEmpty(position);
-                                }
-                                else {
-                                    handleValueCell(temp);
-                                }
-                            }
-                        }
-                        else if (temp.isMine() && temp.isOpenable()){
-                            handleClickedMine(temp);
-                        }
-                        else if (temp.getValue() == 0 && temp.isOpenable()) {
-                            handleCellEmpty(position);
-                        }
-                        else if(temp.isOpenable()) {
-                           handleValueCell(temp);
-                        }
-                    }
-                    if(GameActivity.correctMoves == (getGridHeight()*getGridWidth())- mineNum){
-                        gameWon();
-                    }
-                }
-                if(flagNum >=0)
-                    GameActivity.mineCounter.setMineCounter(flagNum);
-            }
-        });
-        //Glitches on long click
-        instance.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Cell temp= getCell(position);
-                if(GameActivity.GAME_STATE == Constants.GAME_STATE.PLAYING) {
-                    if (temp.isOpened()){
-                        return false;//returning false ensures that there wont be vibration.
-                    }
-                    else {
-                        if(temp.isOpenable()){
-                            flagNum--;
-                        }
-                        temp.setNextFlagImage();
-                        if (!temp.isQuestion() && !temp.isFlagged())
-                            flagNum++;
-                    }
-                }
-                if (flagNum >=0)
-                    GameActivity.mineCounter.setMineCounter(flagNum);
-                return true;
-            }
-        });
-        instance.setOnTouchListener(new OnTouchListener(){
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Button smileyButton= findViewById(R.id.smileyButton);
-                float currentXPosition = event.getX();
-                float currentYPosition = event.getY();
-                int position = instance.pointToPosition((int) currentXPosition, (int) currentYPosition);
-                if(position<0){
-                    position=0;
-                }
-                Cell temp= getCell(position);
-                ArrayList<Integer> neighbors= Finder.findNeighborPositions(temp.getRow(),temp.getCol(),gameGrid);
-                if(event.getAction() == MotionEvent.ACTION_MOVE){
-                    //return true;
-                }
-                handleAnimation(event,neighbors,temp);
-                return false; }
-        });
     }
 
     /**
@@ -165,16 +77,13 @@ public class Grid extends GridView implements Serializable{
         int col= position/getNumColumns();
         return gameGrid[row][col];
     }
-
-    /**
-     * @return The GridAdapter
-     */
-    public GridAdapter getAdapter(){return myAdapter;}
-
     public int getGridWidth(){return GAME_DIFFICULTY.getWidth();}
     public int getGridHeight(){return GAME_DIFFICULTY.getHeight();}
     public int getMineNum(){return GAME_DIFFICULTY.getMineNum();}
-
+    public Cell[][] getCells(){return gameGrid;}
+    public int getFlagNum(){return flagNum;}
+    public void incremementFlagNum(){flagNum++;}
+    public void decrementFlagNum(){flagNum--;}
 
     /**
      * @return If the user clicked on the action button it returns true.
@@ -229,11 +138,10 @@ public class Grid extends GridView implements Serializable{
      * Before the first click the grid contains no values yet. After the first click the grid is generated and the first clicked cell is opened.
      * @param position The position of the first clicked cell.
      */
-    private void handleFirstClick(int position){
+    public void handleFirstClick(int position){
         if(GameActivity.getActionButtonTag()==Constants.TOOLBAR_MINE){
             Util.generateGrid(gameGrid,getMineNum(),position);
             GameActivity.GAME_STATE=Constants.GAME_STATE.PLAYING;
-            GameActivity.timerHandler.postDelayed(GameActivity.gameTimer,0);
         }
     }
 
@@ -241,7 +149,7 @@ public class Grid extends GridView implements Serializable{
      * Used to find the cells that should open up if an empty cell is clicked.
      * @param position position of clicked empty cell.
      */
-    private void handleCellEmpty(int position){
+    public void handleCellEmpty(int position){
         GameActivity.clickVibrate(5);
         int row= position%getGridWidth();
         int col= position/getGridWidth();
@@ -253,44 +161,10 @@ public class Grid extends GridView implements Serializable{
      * When a mine is clicked.
      * @param temp reference to the clicked cell containing the mine.
      */
-    private void handleClickedMine(Cell temp){
+    public void handleClickedMine(Cell temp){
         GameActivity.clickVibrate(600);
         temp.showAsClickedMine();
         gameOver();
-    }
-    /**
-     * Takes care of the animation events.
-     * @param event The events.
-     * @param neighbors The neighboring cells of the clicked cell (temp)
-     * @param temp the clicked cell.
-     */
-    private void handleAnimation(MotionEvent event, ArrayList<Integer> neighbors, Cell temp){
-        if (GameActivity.GAME_STATE==Constants.GAME_STATE.PLAYING && event.getAction() == MotionEvent.ACTION_UP) {
-            //smileyButton.setBackgroundResource(Constants.SMILEY_NORMAL);
-            GameActivity.updateSmileyButton(Constants.SMILEY_NORMAL);
-            for (int neighborPos : neighbors) {
-                int row = neighborPos % getGridWidth();
-                int col = neighborPos / getGridWidth();
-                if (gameGrid[row][col].isAnimated()) {
-                    gameGrid[row][col].undoAnimation();
-                }
-            }
-        }
-        else if(GameActivity.GAME_STATE==Constants.GAME_STATE.PLAYING && event.getAction() == MotionEvent.ACTION_DOWN) {
-            if(temp.isOpened() && temp.getValue()!=0){
-                for(int neighborPos: neighbors){
-                    int row = neighborPos%getGridWidth();
-                    int col= neighborPos/getGridWidth();
-                    if(!gameGrid[row][col].isOpened() && !gameGrid[row][col].isAnimated()){
-                        gameGrid[row][col].animateCell();
-                    }
-                }
-            }
-            if(!temp.isOpened() || (temp.isOpened()&&  temp.getValue()!=0)) {
-                //smileyButton.setBackgroundResource(Constants.SMILEY_SCARED);
-                GameActivity.updateSmileyButton(Constants.SMILEY_SCARED);
-            }
-        }
     }
     /**
      * Used to reveal all the mines in the grid. Called when the game is over.
@@ -315,16 +189,14 @@ public class Grid extends GridView implements Serializable{
     private void gameOver(){
         GameActivity.resetCorrectMoves();
         GameActivity.GAME_STATE= Constants.GAME_STATE.LOST;
-        GameActivity.updateSmileyButton(Constants.SMILEY_DEAD);
         revealMines();
         save();
     }
     /**
      * called when a user wins the game.
      */
-    private void gameWon(){
+    public void gameWon(){
         GameActivity.GAME_STATE= Constants.GAME_STATE.WON;
-        GameActivity.updateSmileyButton(Constants.SMILEY_WON);
         GameActivity.showWonDialog();
     }
 
@@ -389,27 +261,5 @@ public class Grid extends GridView implements Serializable{
         }
         return false;
 
-    }
-
-
-
-
-    /**
-     * GridAdapter used for the gridView.
-     */
-    private class GridAdapter extends BaseAdapter{
-        public GridAdapter() { }
-        public int getCount() {
-            return getGridWidth() * getGridHeight();
-        }
-        public Object getItem(int position) {
-            return getCell(position);
-        }
-        public long getItemId(int position) {
-            return 0;
-        }
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return getCell(position);
-        }
     }
 }

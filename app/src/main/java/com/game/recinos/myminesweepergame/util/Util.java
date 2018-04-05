@@ -1,12 +1,12 @@
-package com.example.recinos.myminesweepergame.util;
+package com.game.recinos.myminesweepergame.util;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.example.recinos.myminesweepergame.R;
-import com.example.recinos.myminesweepergame.Views.Grid.Cell;
+import com.game.recinos.myminesweepergame.R;
+import com.game.recinos.myminesweepergame.Views.Grid.Cell;
 
 import java.util.ArrayList;
 import java.util.Random;

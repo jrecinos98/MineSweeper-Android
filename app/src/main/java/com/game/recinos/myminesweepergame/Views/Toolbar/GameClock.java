@@ -1,10 +1,10 @@
-package com.example.recinos.myminesweepergame.Views.Toolbar;
+package com.game.recinos.myminesweepergame.Views.Toolbar;
 
 import android.os.Handler;
 import android.widget.Button;
 
-import com.example.recinos.myminesweepergame.Constants.Constants;
-import com.example.recinos.myminesweepergame.GameActivity;
+import com.game.recinos.myminesweepergame.Constants.Constants;
+import com.game.recinos.myminesweepergame.GameActivity;
 
 /**
  * Runnable class that instructs the handler how to display the time.

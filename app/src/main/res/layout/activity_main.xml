@@ -120,7 +120,7 @@
     </android.support.v7.widget.Toolbar>
         
 
-    <com.example.recinos.myminesweepergame.Views.Grid.Grid
+    <com.game.recinos.myminesweepergame.Views.Grid.Grid
         android:id="@+id/myMinesweeperGrid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
         android:layout_centerHorizontal="true"
         >
 
-    </com.example.recinos.myminesweepergame.Views.Grid.Grid>
+    </com.game.recinos.myminesweepergame.Views.Grid.Grid>
 
 
 </RelativeLayout>

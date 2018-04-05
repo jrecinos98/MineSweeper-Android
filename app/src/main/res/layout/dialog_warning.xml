@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="#A9A9A9"
     android:backgroundTint="#C0C0C0"
+    android:paddingBottom="5dp"
 
     >
 

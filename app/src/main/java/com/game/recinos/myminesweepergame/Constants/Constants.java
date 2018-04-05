@@ -1,6 +1,6 @@
-package com.example.recinos.myminesweepergame.Constants;
+package com.game.recinos.myminesweepergame.Constants;
 
-import com.example.recinos.myminesweepergame.R;
+import com.game.recinos.myminesweepergame.R;
 
 import java.io.Serializable;
 
@@ -16,9 +16,9 @@ public abstract class Constants implements Serializable {
         NOT_STARTED
     }
     public enum GAME_DIFFICULTY{
-        EASY(12,19,20,160),
-        MEDIUM(15,24,40,160),
-        HARD(20,32,105,160),
+        EASY(12,19,15,160),
+        MEDIUM(15,24,45,160),
+        HARD(20,32,110,160),
         LOAD(0,0,0,0),
         CUSTOM(0,0,0,160);
 
@@ -64,5 +64,15 @@ public abstract class Constants implements Serializable {
         }
         else
             return R.drawable.clock_start;
+    }
+    public static class DifficultyWrap{
+        Constants.GAME_DIFFICULTY difficulty;
+        public DifficultyWrap(Constants.GAME_DIFFICULTY diff) {
+            difficulty=diff;
+        }
+        public Constants.GAME_DIFFICULTY getDifficulty(){
+            return difficulty;
+        }
+        public void setDifficulty(Constants.GAME_DIFFICULTY diff){difficulty=diff;}
     }
 }

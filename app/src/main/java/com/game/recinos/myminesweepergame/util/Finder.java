@@ -1,8 +1,8 @@
-package com.example.recinos.myminesweepergame.util;
+package com.game.recinos.myminesweepergame.util;
 
-import com.example.recinos.myminesweepergame.GameActivity;
-import com.example.recinos.myminesweepergame.Views.Grid.Cell;
-import com.example.recinos.myminesweepergame.Views.Grid.Grid;
+import com.game.recinos.myminesweepergame.GameActivity;
+import com.game.recinos.myminesweepergame.Views.Grid.Cell;
+import com.game.recinos.myminesweepergame.Views.Grid.Grid;
 
 import java.util.ArrayList;
 import java.util.Stack;
