@@ -2,6 +2,7 @@ package com.game.recinos.myminesweepergame.Views.Grid;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.support.annotation.Dimension;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -35,26 +36,18 @@ import java.util.Random;
  */
 
 
-public class Grid extends GridView implements Serializable{
-    private static Grid instance;
-    private Cell[][] gameGrid;
-
-
+public class Grid implements Serializable{
+    private GridComponent[][] gameGrid;
     private Constants.GAME_DIFFICULTY GAME_DIFFICULTY;
-    private transient Context gameContext;
-
-    private int mineNum;
     private int flagNum;
+    private transient Context gameContext;
+    private transient MediaPlayer ring;
     @SuppressLint("ClickableViewAccessibility")
-    public Grid(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        GAME_DIFFICULTY=GameActivity.difficulty;
-        mineNum=getMineNum();
+    public Grid(Constants.GAME_DIFFICULTY diff, Context context){
+        GAME_DIFFICULTY=diff;
         flagNum=getMineNum();
         gameContext=context;
-        setNumColumns(getGridWidth());
-        gameGrid = Util.generateInitial(context,getGridWidth(),getGridHeight());
-        instance=this;
+        gameGrid = Util.generateInitial(getGridWidth(),getGridHeight());
     }
 
     /**
@@ -63,7 +56,7 @@ public class Grid extends GridView implements Serializable{
      * @param col column number
      * @return the cell at that position
      */
-    public Cell getCell(int row, int col){
+    public GridComponent getCell(int row, int col){
         return gameGrid[row][col];
     }
 
@@ -72,15 +65,16 @@ public class Grid extends GridView implements Serializable{
      * @param position the position in  the grid.
      * @return Reference to the cell at that position.
      */
-    public Cell getCell(int position){
+    public GridComponent getCell(int position){
         int row= position%getNumColumns();
         int col= position/getNumColumns();
         return gameGrid[row][col];
     }
+    public int getNumColumns(){return getGridWidth();}
     public int getGridWidth(){return GAME_DIFFICULTY.getWidth();}
     public int getGridHeight(){return GAME_DIFFICULTY.getHeight();}
     public int getMineNum(){return GAME_DIFFICULTY.getMineNum();}
-    public Cell[][] getCells(){return gameGrid;}
+    public GridComponent[][] getCells(){return gameGrid;}
     public int getFlagNum(){return flagNum;}
     public void incremementFlagNum(){flagNum++;}
     public void decrementFlagNum(){flagNum--;}
@@ -96,7 +90,7 @@ public class Grid extends GridView implements Serializable{
      * It makes the given cell either a flag, a question mark, or normal.
      * @param temp
      */
-    public void handleActionButton(Cell temp){
+    public void handleActionButton(GridComponent temp){
         GameActivity.clickVibrate(1);
         if(GameActivity.getActionButtonTag()== Constants.TOOLBAR_FLAG){
             if(temp.isFlagged()){
@@ -126,10 +120,16 @@ public class Grid extends GridView implements Serializable{
         }
     }
 
-    public void handleValueCell(Cell temp){
+    /**
+     * Called when the clicked cell has a value > 0 and it should reveal a number.
+     * @param temp the tapped cell
+     */
+    public void handleValueCell(GridComponent temp){
         GameActivity.incrementCorrectMoves();
         temp.setOpened();
         GameActivity.clickVibrate(5);
+
+
     }
 
 
@@ -161,7 +161,7 @@ public class Grid extends GridView implements Serializable{
      * When a mine is clicked.
      * @param temp reference to the clicked cell containing the mine.
      */
-    public void handleClickedMine(Cell temp){
+    public void handleClickedMine(GridComponent temp){
         GameActivity.clickVibrate(600);
         temp.showAsClickedMine();
         gameOver();

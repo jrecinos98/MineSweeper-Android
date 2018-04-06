@@ -3,6 +3,7 @@ package com.game.recinos.myminesweepergame.util;
 import com.game.recinos.myminesweepergame.GameActivity;
 import com.game.recinos.myminesweepergame.Views.Grid.Cell;
 import com.game.recinos.myminesweepergame.Views.Grid.Grid;
+import com.game.recinos.myminesweepergame.Views.Grid.GridComponent;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -13,11 +14,11 @@ import java.util.Stack;
  */
 
 public abstract class Finder {
-    private static Stack<Cell> stack;
+    private static Stack<GridComponent> stack;
     //Assumes that the tapped button had value of 0.
     public static void findEmpty(int row, int col, Grid grid){
         stackPush(grid.getCell(row,col));
-        Cell temp;
+        GridComponent temp;
         while(!stack.empty()) {
             temp=stack.pop();
             //temp.open();
@@ -71,7 +72,7 @@ public abstract class Finder {
         }
 
     }
-    public static ArrayList<Integer> findNeighborPositions(int row, int column, Cell[][] grid){
+    public static ArrayList<Integer> findNeighborPositions(int row, int column, GridComponent[][] grid){
         //If cell is not on edge then use passed values.
         int rowStart=row-1;
         int rowEnd=row+1;
@@ -107,13 +108,13 @@ public abstract class Finder {
      * Helper to push a GridComponent into the Stack
      * @param cell
      */
-    private static void stackPush(Cell cell){
+    private static void stackPush(GridComponent cell){
         if(stack == null) {
             stack = new Stack<>();
         }
         stack.push(cell);
     }
-    public static void mineFinder(Cell[][] grid, final int row, final int column){
+    public static void mineFinder(GridComponent[][] grid, final int row, final int column){
         //if mine is not in a corner or edge the default values defined below will be used.
         //If cell is not on edge then use passed values.
         int rowStart=row-1;

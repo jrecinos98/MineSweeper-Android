@@ -25,54 +25,19 @@ import com.game.recinos.myminesweepergame.Views.Grid.Grid;
  */
 public abstract class ButtonListeners {
     /**
-     * Launches the game with easy difficulty
+     * Launches the game with specified difficulty
      */
-    public static class EasyDifficultyListener implements View.OnClickListener{
+    public static class DifficultyButtonListener implements  View.OnClickListener{
         Context mContext;
         Constants.GAME_DIFFICULTY difficulty;
-        public EasyDifficultyListener(Context mcontext) {
-            mContext=mcontext;
+        public DifficultyButtonListener(Context context, Constants.GAME_DIFFICULTY diff){
+            mContext=context;
+            difficulty=diff;
         }
         @Override
         public void onClick(View v) {
             Intent toGame= new Intent(mContext,GameActivity.class);
-            difficulty=Constants.GAME_DIFFICULTY.EASY;
-            toGame.putExtra("GAME_DIFFICULTY", difficulty);
-            mContext.startActivity(toGame);
-        }
-    }
-
-    /**
-     * Launches the game with Medium difficulty
-     */
-    public static class MediumDifficultyListener implements View.OnClickListener{
-        Context mContext;
-        Constants.GAME_DIFFICULTY difficulty;
-        public MediumDifficultyListener(Context mcontext) {
-            mContext=mcontext;
-        }
-        @Override
-        public void onClick(View v) {
-            Intent toGame= new Intent(mContext,GameActivity.class);
-            difficulty=Constants.GAME_DIFFICULTY.MEDIUM;
-            toGame.putExtra("GAME_DIFFICULTY", difficulty);
-            mContext.startActivity(toGame);
-        }
-    }
-
-    /**
-     * Launches the game in Hard difficulty
-     */
-    public static class HardDifficultyListener implements View.OnClickListener{
-        Context mContext;
-        Constants.GAME_DIFFICULTY difficulty;
-        public HardDifficultyListener(Context mcontext) {
-            mContext=mcontext;
-        }
-        @Override
-        public void onClick(View v) {
-            Intent toGame= new Intent(mContext,GameActivity.class);
-            difficulty=Constants.GAME_DIFFICULTY.HARD;
+            toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             toGame.putExtra("GAME_DIFFICULTY", difficulty);
             mContext.startActivity(toGame);
         }
@@ -112,6 +77,7 @@ public abstract class ButtonListeners {
         @Override
         public void onClick(View v) {
             Intent settingsIntent= new Intent(mContext, SettingsActivity.class);
+            settingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             mContext.startActivity(settingsIntent);
         }
     }
@@ -166,6 +132,7 @@ public abstract class ButtonListeners {
             difficulty.setEnumHeight(rowNum);
             difficulty.setMineNum(mineNum);
             Intent toGame= new Intent(mContext,GameActivity.class);
+            toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             toGame.putExtra("GAME_DIFFICULTY", difficulty);
             myCustomDialog.dismiss();
             mContext.startActivity(toGame);
@@ -219,18 +186,19 @@ public abstract class ButtonListeners {
             }*/
             Log.d("TOOLBAR", toolbarHeight+"");
             Log.d("MINES", difficulty+"");
+            int mines=0;
             switch(difficulty){
                 case EASY:
-                    difficulty.setMineNum(12);
+                    mines=12;
                     break;
                 case MEDIUM:
-                    difficulty.setMineNum(29);
+                    mines=29;
                     break;
                 case HARD:
-                    difficulty.setMineNum(50);
+                    mines=50;
                     break;
             }
-            int mineNum= (int)Math.sqrt(difficulty.getMineNum()-(difficulty.getMineNum()/2))*availableBlocks;
+            int mineNum= (int)Math.sqrt(mines-(mines/2))*availableBlocks;
             if (difficulty==Constants.GAME_DIFFICULTY.HARD && availableBlocks<10){
                 mineNum-=11;
             }
@@ -243,6 +211,7 @@ public abstract class ButtonListeners {
             difficulty.setEnumHeight(rowNum);
             difficulty.setMineNum(mineNum);
             Intent toGame= new Intent(mContext,GameActivity.class);
+            toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             toGame.putExtra("GAME_DIFFICULTY", difficulty);
             myCustomDialog.dismiss();
             mContext.startActivity(toGame);

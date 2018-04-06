@@ -1,6 +1,8 @@
 package com.game.recinos.myminesweepergame;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -50,9 +52,9 @@ public class MenuActivity extends AppCompatActivity {
     }
     public void setUpListeners(){
         mySettingsButton.setOnClickListener(new ButtonListeners.SettingsListener(getApplicationContext()));
-        myEasyButton.setOnClickListener(new ButtonListeners.EasyDifficultyListener(getApplicationContext()));
-        myMediumButton.setOnClickListener(new ButtonListeners.MediumDifficultyListener(getApplicationContext()));
-        myHardButton.setOnClickListener(new ButtonListeners.HardDifficultyListener(getApplicationContext()));
+        myEasyButton.setOnClickListener(new ButtonListeners.DifficultyButtonListener(getApplicationContext(), Constants.GAME_DIFFICULTY.EASY));
+        myMediumButton.setOnClickListener(new ButtonListeners.DifficultyButtonListener(getApplicationContext(), Constants.GAME_DIFFICULTY.MEDIUM));
+        myHardButton.setOnClickListener(new ButtonListeners.DifficultyButtonListener(getApplicationContext(), Constants.GAME_DIFFICULTY.HARD));
         myLoadButton.setOnClickListener(new ButtonListeners.LoadListener(getApplicationContext()));
         myCustomButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -79,8 +81,8 @@ public class MenuActivity extends AppCompatActivity {
         final SeekBar sliderBar= sizeView.findViewById(com.game.recinos.myminesweepergame.R.id.mySeekBar);
         final SeekBar mineBar= sizeView.findViewById(com.game.recinos.myminesweepergame.R.id.seekBar2);
         final Button myPlayButton= sizeView.findViewById(com.game.recinos.myminesweepergame.R.id.customStartButton);
-        difficulty=Constants.GAME_DIFFICULTY.EASY;
-        Constants.DifficultyWrap difficultyWrap= new Constants.DifficultyWrap(difficulty);
+        Constants.GAME_DIFFICULTY customDifficulty=Constants.GAME_DIFFICULTY.EASY;
+        Constants.DifficultyWrap difficultyWrap= new Constants.DifficultyWrap(customDifficulty);
         myCustomDialog= sizeBuilder.create();
         myCustomDialog.setCanceledOnTouchOutside(false);
         sizeGrid.setAdapter(new GridAdapters.SliderGrid(getApplicationContext()));
@@ -88,5 +90,6 @@ public class MenuActivity extends AppCompatActivity {
         myPlayButton.setOnClickListener(new ButtonListeners.SliderCustomButton(getApplicationContext(),getWindowManager().getDefaultDisplay(),sizeGrid,difficultyWrap,myCustomDialog));
         mineBar.setOnSeekBarChangeListener(new SlidersListeners.MineSliderListener(difficultyWrap));
     }
+
 
 }

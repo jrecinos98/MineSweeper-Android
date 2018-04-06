@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.MediaController;
 import android.widget.RelativeLayout;
 
 import com.game.recinos.myminesweepergame.Constants.Constants;
@@ -32,16 +34,20 @@ public class GameActivity extends AppCompatActivity {
 
 
     public static Vibrator vibe;
+
+
     private Button mySmileyButton;
     public GameClock gameTimer;
     public MineCounter mineCounter;
     public static Handler timerHandler = new Handler();
 
+    private Grid gameGrid;
+    private GridAdapters.GameGridAdapter myAdapter;
+
     public static int correctMoves=0;
     public volatile static int time=0;
     public static int actionTag;
     public static int hintTag;
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,11 +87,14 @@ public class GameActivity extends AppCompatActivity {
      * Inflates the gameGrid and adds the adapter and sets up the grid listener.
      */
     public void setUpGrid() {
-        final Grid gameGrid = findViewById(R.id.myMinesweeperGrid);
-        gameGrid.setAdapter(new GridAdapters.GameGridAdapter(gameGrid.getCells()));
-        gameGrid.setOnItemClickListener(new GridListeners.GridOnItemClickListener(gameGrid,mySmileyButton,mineCounter,gameTimer));
-        gameGrid.setOnItemLongClickListener(new GridListeners.GridOnItemLongClickListener(gameGrid,mineCounter));
-        gameGrid.setOnTouchListener(new GridListeners.GridOnTouchListener(gameGrid,mySmileyButton));
+        gameGrid= new Grid(difficulty,getApplicationContext());
+        myAdapter= new GridAdapters.GameGridAdapter(gameGrid.getCells(),getApplicationContext());
+        final GridView myMinesweeperGrid = findViewById(R.id.myMinesweeperGrid);
+        myMinesweeperGrid.setNumColumns(difficulty.getWidth());
+        myMinesweeperGrid.setAdapter(myAdapter);
+        myMinesweeperGrid.setOnItemClickListener(new GridListeners.GridOnItemClickListener(gameGrid,mySmileyButton,mineCounter,gameTimer,myAdapter));
+        myMinesweeperGrid.setOnItemLongClickListener(new GridListeners.GridOnItemLongClickListener(gameGrid,mineCounter,myAdapter));
+        myMinesweeperGrid.setOnTouchListener(new GridListeners.GridOnTouchListener(gameGrid,getApplicationContext(),mySmileyButton, myAdapter,myMinesweeperGrid));
     }
     /**
      *intializes the smiley icon

@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.game.recinos.myminesweepergame.R;
 
-public class GridComponent {
+import java.io.Serializable;
+
+public class GridComponent implements Serializable {
     private int value;
     private boolean isMine;
     private boolean isOpened;
@@ -30,7 +32,7 @@ public class GridComponent {
             R.drawable.four, R.drawable.five, R.drawable.six, R.drawable.seven,
             R.drawable.eight,
     };
-    public GridComponent(Context context, int row, int col, int position) {
+    public GridComponent(int row, int col, int position) {
         this.row=row;
         this.col=col;
         this.position=position;
@@ -44,6 +46,12 @@ public class GridComponent {
     public int getValue() {
         return value;
     }
+
+    /**
+     *Return the currentImage of the cell.
+     * @return
+     */
+    public int getCurrentImage(){return currentImage;}
     /**
      * Increments the current value of the cell.
      */
@@ -84,6 +92,9 @@ public class GridComponent {
     public void setOpened() {
         if (!this.isFlagged() && !this.isOpened()){
             this.isOpened=true;
+            if(revealValue()){
+                currentImage= GridComponent.thumbnails[getValue()];
+            }
             //invalidate(); //invalidate view. After invalidation it gets redrawn (calls onDraw)
         }
     }

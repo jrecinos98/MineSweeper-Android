@@ -5,7 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.game.recinos.myminesweepergame.R;
 import com.game.recinos.myminesweepergame.Views.Grid.Cell;
+import com.game.recinos.myminesweepergame.Views.Grid.GridComponent;
 
 /**
  * Container class for various Grid Adapters
@@ -34,8 +36,8 @@ public abstract class GridAdapters {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = new Cell(mContext, 0, 0, position);
-                convertView.setBackgroundResource(com.game.recinos.myminesweepergame.R.drawable.block);
+                convertView = new Cell(mContext, position, R.drawable.block);
+                //convertView.setBackgroundResource(com.game.recinos.myminesweepergame.R.drawable.block);
             }
             return convertView;
         }
@@ -44,24 +46,40 @@ public abstract class GridAdapters {
      * GridAdapter used for the actual game grid.
      */
     public static class GameGridAdapter extends BaseAdapter{
-        Cell [][] cells;
-        public GameGridAdapter(Cell[][] mCells) { cells=mCells;}
+        GridComponent[][] cells;
+        Context mContext;
+        //Cell[][] views;
+        public GameGridAdapter(GridComponent[][] data, Context context) {
+            cells=data;
+            mContext=context;
+            //views= new Cell[data.length][data[0].length];
+        }
         public int getCount() {
             return cells.length * cells[0].length;
         }
         public Object getItem(int position) {
-            return getCell(position);
+            return null;
         }
         public long getItemId(int position) {
             return 0;
         }
         public View getView(int position, View convertView, ViewGroup parent) {
-            return getCell(position);
+            int row = position % cells.length;
+            int col = position / cells.length;
+            if (convertView == null) {
+                int currentImage = cells[row][col].getCurrentImage();
+                convertView = new Cell(mContext, position, currentImage);
+                //views[row][col]= (Cell) convertView;
+            }
+            Cell temp = (Cell) convertView;
+            if (temp.getCurrentImage() != cells[row][col].getCurrentImage()) {
+                temp.setCurrentImage(cells[row][col].getCurrentImage());
+            }
+            //temp.invalidate();
+            return convertView;
         }
-        public Cell getCell(int position){
-            int row= position% cells.length;
-            int col= position/ cells.length;
-            return cells[row][col];
+        public void refresh() {
+            notifyDataSetChanged();
         }
     }
 }

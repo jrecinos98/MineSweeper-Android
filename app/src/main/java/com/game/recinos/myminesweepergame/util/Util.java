@@ -6,7 +6,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.game.recinos.myminesweepergame.R;
-import com.game.recinos.myminesweepergame.Views.Grid.Cell;
+import com.game.recinos.myminesweepergame.Views.Grid.GridComponent;
+import com.game.recinos.myminesweepergame.Views.Grid.GridComponent;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,16 +16,16 @@ import java.util.Random;
  * Created by recinos on 2/5/18.
  */
 public class Util {
-    public static Cell[][] generateInitial(Context context,int width,int height){
-        Cell[][] grid = new Cell[width][height];
+    public static GridComponent[][] generateInitial(int width, int height){
+        GridComponent[][] grid = new GridComponent[width][height];
         for (int row = 0; row < width; row++) {
             for (int col = 0; col < height; col++) {
-                grid[row][col] = new Cell(context,row,col,row+(col * width)); //position= x+(y * width);
+                grid[row][col] = new GridComponent(row,col,row+(col * width)); //position= x+(y * width);
             }
         }
         return grid;
     }
-    public static void generateGrid(Cell[][] grid, int minenumber, int position) {
+    public static void generateGrid(GridComponent[][] grid, int minenumber, int position) {
         int row = position%grid.length;
         int col= position/grid.length;
         Random r = new Random();
