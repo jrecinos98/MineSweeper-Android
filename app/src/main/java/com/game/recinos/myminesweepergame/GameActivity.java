@@ -1,11 +1,14 @@
 package com.game.recinos.myminesweepergame;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Point;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +24,7 @@ import com.game.recinos.myminesweepergame.Views.Grid.Grid;
 import com.game.recinos.myminesweepergame.Views.Toolbar.MineCounter;
 import com.game.recinos.myminesweepergame.Views.Toolbar.GameClock;
 import com.game.recinos.myminesweepergame.Adapters.GridAdapters;
-
+import com.game.recinos.myminesweepergame.util.Util;
 
 
 @SuppressWarnings("ClickableViewAccessibility")
@@ -61,6 +64,9 @@ public class GameActivity extends AppCompatActivity {
         setUpGrid();
         initWonDialog();
         initWarningDialog();
+        AudioManager myAudioManager;
+        myAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+
     }
     protected  void onPause(){
         super.onPause();

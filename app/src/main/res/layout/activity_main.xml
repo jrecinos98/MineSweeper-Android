@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="0dp"
     android:orientation="vertical"
+    android:background="@color/gridColor"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <android.support.v7.widget.Toolbar
@@ -126,7 +127,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/my_toolbar"
         android:stretchMode="columnWidth"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+
         >
 
     </GridView>
