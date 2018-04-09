@@ -37,3 +37,7 @@ output.json
 obj/
 .externalNativeBuild
 
+#NDK
+obj/
+.externalNativeBuild
+
