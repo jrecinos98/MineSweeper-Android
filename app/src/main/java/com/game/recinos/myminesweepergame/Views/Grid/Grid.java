@@ -3,6 +3,7 @@ package com.game.recinos.myminesweepergame.Views.Grid;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Dimension;
@@ -42,14 +43,17 @@ public class Grid implements Serializable, Parcelable{
     private GridComponent[][] gameGrid;
     private Constants.GAME_DIFFICULTY GAME_DIFFICULTY;
     private int flagNum;
-    private transient Context gameContext;
-    private transient MediaPlayer ring;
     @SuppressLint("ClickableViewAccessibility")
-    public Grid(Constants.GAME_DIFFICULTY diff, Context context){
+    public Grid(Constants.GAME_DIFFICULTY diff){
         GAME_DIFFICULTY=diff;
         flagNum=getMineNum();
-        gameContext=context;
         gameGrid = Util.generateInitial(getGridWidth(),getGridHeight());
+    }
+    public Grid(Parcel savedState){
+        Bundle saved= savedState.readBundle();
+        flagNum= saved.getInt("Flags");
+        GAME_DIFFICULTY= (Constants.GAME_DIFFICULTY) saved.get("Difficulty");
+        gameGrid= (GridComponent[][]) saved.get("Cells");
     }
 
     /**
@@ -213,14 +217,20 @@ public class Grid implements Serializable, Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        Bundle data = new Bundle();
+        data.putSerializable("Cells", getCells());
+        data.putSerializable("Difficulty", GAME_DIFFICULTY);
+        data.putInt("Flags", flagNum);
+        dest.writeBundle(data);
     }
     public static final Parcelable.Creator CREATOR
             = new Parcelable.Creator() {
         public Grid createFromParcel(Parcel in) {
-            return Grid(in);
+            return new Grid(in);
         }
+
         public Grid[] newArray(int size) {
             return new Grid[size];
         }
+    };
 }

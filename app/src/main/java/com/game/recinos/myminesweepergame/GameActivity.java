@@ -1,6 +1,8 @@
 package com.game.recinos.myminesweepergame;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.os.Handler;
@@ -8,6 +10,7 @@ import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,10 +29,12 @@ import com.game.recinos.myminesweepergame.Views.Toolbar.GameClock;
 import com.game.recinos.myminesweepergame.Adapters.GridAdapters;
 import com.game.recinos.myminesweepergame.util.Util;
 
+import java.util.List;
+
 
 @SuppressWarnings("ClickableViewAccessibility")
 public class GameActivity extends AppCompatActivity {
-    public static Constants.GAME_DIFFICULTY difficulty;
+    public Constants.GAME_DIFFICULTY difficulty;
     public volatile static Constants.GAME_STATE GAME_STATE;
 
     private static AlertDialog wonDialog;
@@ -54,27 +59,73 @@ public class GameActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        difficulty = (Constants.GAME_DIFFICULTY) getIntent().getSerializableExtra("GAME_DIFFICULTY");
         GAME_STATE= Constants.GAME_STATE.NOT_STARTED;
-        int ToolBarHeight= difficulty.getToolBarHeight();
+        int ToolBarHeight= Constants.TOOLBAR_HEIGHT;
         vibe= (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         setContentView(R.layout.activity_main);
+        //Reason why toolbar is not increasing right
         setToolBarHeight(ToolBarHeight);
         initToolBarButtons();
-        setUpGrid();
+        if(savedInstanceState != null){
+            difficulty= (Constants.GAME_DIFFICULTY)savedInstanceState.getSerializable("Difficulty");
+            createMineCounter();
+            reloadGame(savedInstanceState);
+        }
+        else {
+            difficulty = (Constants.GAME_DIFFICULTY) getIntent().getSerializableExtra("GAME_DIFFICULTY");
+            createMineCounter();
+            setUpNewGrid();
+        }
         initWonDialog();
         initWarningDialog();
 
     }
+
+    /**
+     * When the application goes idle we save the grid to restore later.
+     * @param outState
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable("GameGrid", gameGrid);
+        outState.putSerializable("Difficulty", difficulty);
+        super.onSaveInstanceState(outState);
+    }
     protected  void onPause(){
         super.onPause();
-        wonDialog.dismiss();
+        if(GAME_STATE== Constants.GAME_STATE.PLAYING) {
+            GAME_STATE = Constants.GAME_STATE.PAUSED;
+        }
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(GAME_STATE==Constants.GAME_STATE.PAUSED) {
+            GAME_STATE = Constants.GAME_STATE.PLAYING;
+            timerHandler.postDelayed(gameTimer,0);
+        }
+
+    }
+    @Override
+    public void onBackPressed(){
+       super.onBackPressed();
+    }
+
     public static void incrementCorrectMoves(){
         correctMoves++;
     }
     public static void resetCorrectMoves(){
         correctMoves=0;
+    }
+
+    /**
+     * resets game
+     */
+    public void resetGame(){
+        GAME_STATE= Constants.GAME_STATE.NOT_STARTED;
+        initToolBarButtons();
+        createMineCounter();
+        setUpNewGrid();
     }
     /**
      * Creates all the toolbar buttons.
@@ -83,22 +134,45 @@ public class GameActivity extends AppCompatActivity {
         createSmiley();
         createHintButton();
         createActionButton();
-        createMineCounter();
         createTimer();
 
     }
     /**
      * Inflates the gameGrid and adds the adapter and sets up the grid listener.
      */
-    public void setUpGrid() {
-        gameGrid= new Grid(difficulty,getApplicationContext());
-        myAdapter= new GridAdapters.GameGridAdapter(gameGrid.getCells(),getApplicationContext());
+    public void setUpNewGrid() {
+        gameGrid = new Grid(difficulty);
+        setGridAdapter();
+        setUpGridListeners();
+    }
+
+    /**
+     * when an activity goes idle we restore the grid.
+     * @param saved
+     */
+    public void reloadGame(Bundle saved){
+        gameGrid= (Grid) saved.getParcelable("GameGrid");
+        setGridAdapter();
+        setUpGridListeners();
+        }
+
+    /**
+     * Sets up the GridListeners for the grid.
+     */
+    private void setUpGridListeners(){
         final GridView myMinesweeperGrid = findViewById(R.id.myMinesweeperGrid);
         myMinesweeperGrid.setNumColumns(difficulty.getWidth());
         myMinesweeperGrid.setAdapter(myAdapter);
         myMinesweeperGrid.setOnItemClickListener(new GridListeners.GridOnItemClickListener(gameGrid,mySmileyButton,mineCounter,gameTimer,myAdapter));
         myMinesweeperGrid.setOnItemLongClickListener(new GridListeners.GridOnItemLongClickListener(gameGrid,mineCounter,myAdapter));
         myMinesweeperGrid.setOnTouchListener(new GridListeners.GridOnTouchListener(gameGrid,getApplicationContext(),mySmileyButton, myAdapter,myMinesweeperGrid));
+    }
+
+    /**
+     * initializes GridAdapter.
+     */
+    private void setGridAdapter(){
+        myAdapter= new GridAdapters.GameGridAdapter(gameGrid.getCells(),getApplicationContext());
     }
     /**
      *intializes the smiley icon
@@ -116,10 +190,14 @@ public class GameActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_UP:
                         if(GAME_STATE==Constants.GAME_STATE.PLAYING){
                             warningDialog.show();}
-                        else {
+                        else if (GAME_STATE !=Constants.GAME_STATE.NOT_STARTED) {
                             resetCorrectMoves();
-                            recreate();
+                            resetGame();
                         }
+                        else{
+                            v.setBackgroundResource(Constants.SMILEY_NORMAL);
+                        }
+
                 }
                 return false;}});
     }
@@ -157,7 +235,7 @@ public class GameActivity extends AppCompatActivity {
         Button mine0Button= findViewById(R.id.mines0);
         Button mine1Button=findViewById(R.id.mines1);
         Button mine2Button= findViewById(R.id.mine2);
-        mineCounter= new MineCounter(GameActivity.difficulty.getMineNum(), mine0Button, mine1Button, mine2Button);
+        mineCounter= new MineCounter(difficulty.getMineNum(), mine0Button, mine1Button, mine2Button);
     }
     /**
      * initializes the Timer in the toolbar
@@ -187,7 +265,7 @@ public class GameActivity extends AppCompatActivity {
         vibe.vibrate(duration);
     }
     /**
-     * initializes the wn dialog box
+     * initializes the won dialog box
      */
     public void initWonDialog(){
         AlertDialog.Builder wonBuilder= new AlertDialog.Builder(GameActivity.this);
@@ -195,6 +273,10 @@ public class GameActivity extends AppCompatActivity {
         wonBuilder.setView(wonView);
         wonDialog = wonBuilder.create();
     }
+
+    /**
+     * warns the user when they want to reset a started game.
+     */
     public void initWarningDialog(){
         //Use mview.findViewById rather than just findViewById.
         // Because if we dont specify mview then the widgets will be
@@ -211,7 +293,7 @@ public class GameActivity extends AppCompatActivity {
                 clickVibrate(1);
                 GameActivity.resetCorrectMoves();
                 warningDialog.dismiss();
-                recreate();
+                resetGame();
             }
         });
         Button noButton= warningView.findViewById(R.id.myNoButton);

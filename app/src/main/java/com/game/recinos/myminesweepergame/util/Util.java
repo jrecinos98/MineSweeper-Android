@@ -109,7 +109,7 @@ public class Util {
      * Checks whether a save file exists.
      * @return true if save file exists and false otherwise
      */
-    private static boolean saveExist(String fileName){
+    public static boolean saveExist(String fileName){
         return (new File(fileName).exists());
     }
 }

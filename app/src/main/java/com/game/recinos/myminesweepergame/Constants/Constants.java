@@ -1,5 +1,8 @@
 package com.game.recinos.myminesweepergame.Constants;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.game.recinos.myminesweepergame.R;
 
 import java.io.Serializable;
@@ -13,14 +16,15 @@ public abstract class Constants implements Serializable {
         PLAYING,
         LOST,
         WON,
-        NOT_STARTED
+        NOT_STARTED,
+        PAUSED
     }
     public enum GAME_DIFFICULTY{
         EASY(12,19,15,160),
         MEDIUM(15,24,45,160),
         HARD(20,32,110,160),
-        LOAD(0,0,0,0),
-        CUSTOM(0,0,0,160);
+        LOAD,
+        CUSTOM;
 
         private int width;
         private int height;
@@ -32,6 +36,8 @@ public abstract class Constants implements Serializable {
             this.mineNum=m;
             this.toolBarHeight=t;
         }
+        GAME_DIFFICULTY(){}
+
         public int getWidth(){return width;}
         public int getHeight(){return height;}
         public int getMineNum(){return mineNum;}
@@ -40,7 +46,9 @@ public abstract class Constants implements Serializable {
         public void setEnumHeight(int h){height=h;}
         public void setMineNum(int m){mineNum=m;}
         public void setToolBarHeight(int t){toolBarHeight=t;}
+
     }
+    public final static int TOOLBAR_HEIGHT= 160;
     public final static int SMILEY_NORMAL= R.drawable.normal;
     public final static int SMILEY_RESET=R.drawable.reset;
     public final static int SMILEY_SCARED=R.drawable.scared;
