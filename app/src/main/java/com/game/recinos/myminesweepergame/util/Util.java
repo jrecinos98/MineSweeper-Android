@@ -9,6 +9,13 @@ import com.game.recinos.myminesweepergame.R;
 import com.game.recinos.myminesweepergame.Views.Grid.GridComponent;
 import com.game.recinos.myminesweepergame.Views.Grid.GridComponent;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -48,4 +55,61 @@ public class Util {
             float px = dp * (metrics.densityDpi / 160f);
             return Math.round(px);
         }
+
+    /**
+     * Saves the current game (this) into a serialized file
+     */
+    public void save(Context context, String fileName) {
+        //For Internal Storage.
+        File path = context.getFilesDir();
+        //For External Storage SD.
+        File pathExt= context.getExternalFilesDir(null);
+        File file = new File(path, "GameSave.ser");
+        try {
+            FileOutputStream fileOutputStream = context.openFileOutput("GameSave.ser", Context.MODE_PRIVATE);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * Loads a serializable object.
+     *
+     * @param context The application context.
+     * @param <T> The object type.
+     *
+     * @return the serializable object.
+     */
+    public static<T extends Serializable> T loadPreviousGame(Context context, String fileName) {
+        T save = null;
+        try {
+            FileInputStream fileInputStream = context.openFileInput(fileName);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            save = (T) objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return save;
+    }
+    /**
+     * Removes a specified file.
+     *
+     * @param context The application context.
+     */
+    public static void deleteSave(Context context, String fileName) {
+        if(saveExist(fileName))
+            context.deleteFile("GameSave.ser");
+    }
+    /**
+     * Checks whether a save file exists.
+     * @return true if save file exists and false otherwise
+     */
+    private static boolean saveExist(String fileName){
+        return (new File(fileName).exists());
+    }
 }

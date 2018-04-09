@@ -3,6 +3,8 @@ package com.game.recinos.myminesweepergame.Views.Grid;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Dimension;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -36,7 +38,7 @@ import java.util.Random;
  */
 
 
-public class Grid implements Serializable{
+public class Grid implements Serializable, Parcelable{
     private GridComponent[][] gameGrid;
     private Constants.GAME_DIFFICULTY GAME_DIFFICULTY;
     private int flagNum;
@@ -190,7 +192,6 @@ public class Grid implements Serializable{
         GameActivity.resetCorrectMoves();
         GameActivity.GAME_STATE= Constants.GAME_STATE.LOST;
         revealMines();
-        save();
     }
     /**
      * called when a user wins the game.
@@ -202,64 +203,24 @@ public class Grid implements Serializable{
 
     public Constants.GAME_STATE getGAME_STATE(){return GameActivity.GAME_STATE;}
     public Constants.GAME_DIFFICULTY getDifficulty(){return GAME_DIFFICULTY;}
-    /**
-     * Saves the current game (this) into a serialized file
-     */
-    public void save() {
-        //For Internal Storage.
-        File path = gameContext.getFilesDir();
-        //For External Storage SD.
-        File pathExt= gameContext.getExternalFilesDir(null);
-        File file = new File(path, "GameSave.ser");
-        try {
-            FileOutputStream fileOutputStream = gameContext.openFileOutput("GameSave.ser", Context.MODE_PRIVATE);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(this);
-            objectOutputStream.close();
-            fileOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    /**
-     * Loads a serializable object.
-     *
-     * @param context The application context.
-     * @param <T> The object type.
-     *
-     * @return the serializable object.
-     */
-    public static<T extends Serializable> T loadPreviousGame(Context context) {
-        T save = null;
-        try {
-            FileInputStream fileInputStream = context.openFileInput("GameSave.ser");
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            save = (T) objectInputStream.readObject();
-            objectInputStream.close();
-            fileInputStream.close();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return save;
-    }
-    /**
-     * Removes a specified file.
-     *
-     * @param context The application context.
-     */
-    public static void deleteSave(Context context) {
-        context.deleteFile("GameSave.ser");
-    }
-    /**
-     * Checks whether a save file exists.
-     * @return true if save file exists and false otherwise
-     */
-    public static boolean saveExist(){
-        if (new File("MyGame.ser").exists()){
-            return true;
-        }
-        return false;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
 
     }
+    public static final Parcelable.Creator CREATOR
+            = new Parcelable.Creator() {
+        public Grid createFromParcel(Parcel in) {
+            return Grid(in);
+        }
+        public Grid[] newArray(int size) {
+            return new Grid[size];
+        }
 }

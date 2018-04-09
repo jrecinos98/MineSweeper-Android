@@ -64,8 +64,6 @@ public class GameActivity extends AppCompatActivity {
         setUpGrid();
         initWonDialog();
         initWarningDialog();
-        AudioManager myAudioManager;
-        myAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 
     }
     protected  void onPause(){
