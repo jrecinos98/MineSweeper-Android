@@ -1,38 +1,17 @@
-package com.game.recinos.myminesweepergame.Views.Grid;
+package com.game.recinos.myminesweepergame.Grid;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Dimension;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.GridView;
 
 import com.game.recinos.myminesweepergame.Constants.Constants;
 import com.game.recinos.myminesweepergame.GameActivity;
-import com.game.recinos.myminesweepergame.R;
 import com.game.recinos.myminesweepergame.util.Util;
 import com.game.recinos.myminesweepergame.util.Finder;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by recinos on 2/7/18.
@@ -43,6 +22,7 @@ public class Grid implements Serializable, Parcelable{
     private GridComponent[][] gameGrid;
     private Constants.GAME_DIFFICULTY GAME_DIFFICULTY;
     private int flagNum;
+    private int correctMoves=0;
     @SuppressLint("ClickableViewAccessibility")
     public Grid(Constants.GAME_DIFFICULTY diff){
         GAME_DIFFICULTY=diff;
@@ -53,6 +33,7 @@ public class Grid implements Serializable, Parcelable{
         Bundle saved= savedState.readBundle();
         flagNum= saved.getInt("Flags");
         GAME_DIFFICULTY= (Constants.GAME_DIFFICULTY) saved.get("Difficulty");
+        correctMoves= saved.getInt("Moves");
         gameGrid= (GridComponent[][]) saved.get("Cells");
     }
 
@@ -80,10 +61,18 @@ public class Grid implements Serializable, Parcelable{
     public int getGridWidth(){return GAME_DIFFICULTY.getWidth();}
     public int getGridHeight(){return GAME_DIFFICULTY.getHeight();}
     public int getMineNum(){return GAME_DIFFICULTY.getMineNum();}
+    public Constants.GAME_DIFFICULTY getDifficulty(){return GAME_DIFFICULTY;}
+    public Constants.GAME_STATE getGAME_STATE(){return GameActivity.GAME_STATE;}
     public GridComponent[][] getCells(){return gameGrid;}
     public int getFlagNum(){return flagNum;}
     public void incremementFlagNum(){flagNum++;}
     public void decrementFlagNum(){flagNum--;}
+    public void incrementCorrectMoves(){
+        correctMoves++;
+    }
+    public int getCorrectMoves(){
+        return correctMoves;
+    }
 
     /**
      * @return If the user clicked on the action button it returns true.
@@ -131,13 +120,12 @@ public class Grid implements Serializable, Parcelable{
      * @param temp the tapped cell
      */
     public void handleValueCell(GridComponent temp){
-        GameActivity.incrementCorrectMoves();
+        incrementCorrectMoves();
         temp.setOpened();
         GameActivity.clickVibrate(5);
 
 
     }
-
 
 
     /**
@@ -193,7 +181,6 @@ public class Grid implements Serializable, Parcelable{
      * Called when the player clicks on a mine.
      */
     private void gameOver(){
-        GameActivity.resetCorrectMoves();
         GameActivity.GAME_STATE= Constants.GAME_STATE.LOST;
         revealMines();
     }
@@ -205,8 +192,7 @@ public class Grid implements Serializable, Parcelable{
         GameActivity.showWonDialog();
     }
 
-    public Constants.GAME_STATE getGAME_STATE(){return GameActivity.GAME_STATE;}
-    public Constants.GAME_DIFFICULTY getDifficulty(){return GAME_DIFFICULTY;}
+
 
 
 
@@ -221,6 +207,7 @@ public class Grid implements Serializable, Parcelable{
         data.putSerializable("Cells", getCells());
         data.putSerializable("Difficulty", GAME_DIFFICULTY);
         data.putInt("Flags", flagNum);
+        data.putInt("Moves", correctMoves);
         dest.writeBundle(data);
     }
     public static final Parcelable.Creator CREATOR

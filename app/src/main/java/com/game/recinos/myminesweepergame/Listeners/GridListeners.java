@@ -1,24 +1,19 @@
 package com.game.recinos.myminesweepergame.Listeners;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.MediaController;
 
 import com.game.recinos.myminesweepergame.Adapters.GridAdapters;
 import com.game.recinos.myminesweepergame.Constants.Constants;
 import com.game.recinos.myminesweepergame.GameActivity;
-import com.game.recinos.myminesweepergame.R;
-import com.game.recinos.myminesweepergame.Views.Grid.Cell;
-import com.game.recinos.myminesweepergame.Views.Grid.Grid;
-import com.game.recinos.myminesweepergame.Views.Grid.GridComponent;
-import com.game.recinos.myminesweepergame.Views.Toolbar.GameClock;
-import com.game.recinos.myminesweepergame.Views.Toolbar.MineCounter;
+import com.game.recinos.myminesweepergame.Grid.Grid;
+import com.game.recinos.myminesweepergame.Grid.GridComponent;
+import com.game.recinos.myminesweepergame.CustomViews.Toolbar.GameClock;
+import com.game.recinos.myminesweepergame.CustomViews.Toolbar.MineCounter;
 import com.game.recinos.myminesweepergame.util.Finder;
 
 import java.util.ArrayList;
@@ -41,13 +36,17 @@ public class GridListeners {
             mineCounter=mineCount;
             gameTimer=timer;
             myAdapter=adapter;
-
-
         }
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             GridComponent temp= gameGrid.getCell(position);
-            MediaPlayer ring;
+            if(GameActivity.GAME_STATE == Constants.GAME_STATE.RELOADED){
+                if(GameActivity.time==0){
+                    gameGrid.handleFirstClick(position);
+                }
+                GameActivity.timerHandler.postDelayed(gameTimer,0);
+                GameActivity.GAME_STATE= Constants.GAME_STATE.PLAYING;
+            }
             if(GameActivity.GAME_STATE == Constants.GAME_STATE.NOT_STARTED){
                 gameGrid.handleFirstClick(position);
                 //myAdapter.refresh();
@@ -83,7 +82,7 @@ public class GridListeners {
                         gameGrid.handleValueCell(temp);
                     }
                 }
-                if(GameActivity.correctMoves == (gameGrid.getGridHeight()*gameGrid.getGridWidth())- gameGrid.getMineNum()){
+                if(gameGrid.getCorrectMoves() == (gameGrid.getGridHeight()*gameGrid.getGridWidth())- gameGrid.getMineNum()){
                     gameGrid.gameWon();
                     smileyButton.setBackgroundResource(Constants.SMILEY_WON);
                 }

@@ -1,4 +1,4 @@
-package com.game.recinos.myminesweepergame.Views.Toolbar;
+package com.game.recinos.myminesweepergame.CustomViews.Toolbar;
 
 import android.widget.Button;
 

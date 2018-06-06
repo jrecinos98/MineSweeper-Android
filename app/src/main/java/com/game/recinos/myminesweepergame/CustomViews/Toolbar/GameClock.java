@@ -1,4 +1,4 @@
-package com.game.recinos.myminesweepergame.Views.Toolbar;
+package com.game.recinos.myminesweepergame.CustomViews.Toolbar;
 
 import android.os.Handler;
 import android.widget.Button;
@@ -25,6 +25,18 @@ public class GameClock implements Runnable{
        this.timer2=timer2;
        this.timer3=timer3;
        this.timerHandler=timerHandler;
+       if(GameActivity.time != 0 && GameActivity.time <3600){
+           int minutes= GameActivity.time/60;
+           int seconds= GameActivity.time-minutes;
+           button0Time= minutes/10;
+           button1Time= (minutes-button0Time*10);
+           button2Time= (seconds/10);
+           button3Time= (seconds-button2Time*10);
+           timer3.setBackgroundResource(Constants.getClockImage(button3Time));
+           timer2.setBackgroundResource(Constants.getClockImage(button2Time));
+           timer1.setBackgroundResource(Constants.getClockImage(button1Time));
+           timer0.setBackgroundResource(Constants.getClockImage(button0Time));
+       }
    }
     @Override
     public void run() {

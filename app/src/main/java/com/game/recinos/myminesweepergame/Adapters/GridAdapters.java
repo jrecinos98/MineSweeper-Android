@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.game.recinos.myminesweepergame.R;
-import com.game.recinos.myminesweepergame.Views.Grid.Cell;
-import com.game.recinos.myminesweepergame.Views.Grid.GridComponent;
+import com.game.recinos.myminesweepergame.CustomViews.Grid.Cell;
+import com.game.recinos.myminesweepergame.Grid.GridComponent;
 
 /**
  * Container class for various Grid Adapters

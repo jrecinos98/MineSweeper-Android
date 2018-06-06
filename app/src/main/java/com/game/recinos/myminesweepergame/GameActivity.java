@@ -1,35 +1,28 @@
 package com.game.recinos.myminesweepergame;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Point;
-import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Display;
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.MediaController;
 import android.widget.RelativeLayout;
 
 import com.game.recinos.myminesweepergame.Constants.Constants;
 import com.game.recinos.myminesweepergame.Listeners.ButtonListeners;
 import com.game.recinos.myminesweepergame.Listeners.GridListeners;
-import com.game.recinos.myminesweepergame.Views.Grid.Cell;
-import com.game.recinos.myminesweepergame.Views.Grid.Grid;
-import com.game.recinos.myminesweepergame.Views.Toolbar.MineCounter;
-import com.game.recinos.myminesweepergame.Views.Toolbar.GameClock;
+import com.game.recinos.myminesweepergame.Grid.Grid;
+import com.game.recinos.myminesweepergame.CustomViews.Toolbar.MineCounter;
+import com.game.recinos.myminesweepergame.CustomViews.Toolbar.GameClock;
 import com.game.recinos.myminesweepergame.Adapters.GridAdapters;
 import com.game.recinos.myminesweepergame.util.Util;
 
-import java.util.List;
+import android.widget.Toast;
 
 
 @SuppressWarnings("ClickableViewAccessibility")
@@ -52,7 +45,7 @@ public class GameActivity extends AppCompatActivity {
     private Grid gameGrid;
     private GridAdapters.GameGridAdapter myAdapter;
 
-    public static int correctMoves=0;
+
     public volatile static int time=0;
     public static int actionTag;
     public static int hintTag;
@@ -67,13 +60,20 @@ public class GameActivity extends AppCompatActivity {
         setToolBarHeight(ToolBarHeight);
         initToolBarButtons();
         if(savedInstanceState != null){
-            difficulty= (Constants.GAME_DIFFICULTY)savedInstanceState.getSerializable("Difficulty");
+            GameActivity.GAME_STATE= Constants.GAME_STATE.RELOADED;
+            GameActivity.time= savedInstanceState.getInt("Time");
+            difficulty= (Constants.GAME_DIFFICULTY) savedInstanceState.getSerializable("Difficulty");
+            //Difficulty must be defined before MineConter created.
             createMineCounter();
+            createTimer();
             reloadGame(savedInstanceState);
+
+            Toast.makeText(getApplicationContext(),"Game Has Been reloaded", Toast.LENGTH_LONG).show();
         }
         else {
             difficulty = (Constants.GAME_DIFFICULTY) getIntent().getSerializableExtra("GAME_DIFFICULTY");
             createMineCounter();
+            createTimer();
             setUpNewGrid();
         }
         initWonDialog();
@@ -89,6 +89,7 @@ public class GameActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable("GameGrid", gameGrid);
         outState.putSerializable("Difficulty", difficulty);
+        outState.putInt("Time", GameActivity.time);
         super.onSaveInstanceState(outState);
     }
     protected  void onPause(){
@@ -101,21 +102,17 @@ public class GameActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         if(GAME_STATE==Constants.GAME_STATE.PAUSED) {
-            GAME_STATE = Constants.GAME_STATE.PLAYING;
-            timerHandler.postDelayed(gameTimer,0);
+            GAME_STATE = Constants.GAME_STATE.RELOADED;
+            //timerHandler.postDelayed(gameTimer,0);
         }
 
     }
     @Override
     public void onBackPressed(){
-       super.onBackPressed();
-    }
-
-    public static void incrementCorrectMoves(){
-        correctMoves++;
-    }
-    public static void resetCorrectMoves(){
-        correctMoves=0;
+        Util.save(getApplicationContext(), "GameSave.ser", gameGrid);
+        GameActivity.time=0;
+        super.onBackPressed();
+        //resetGame();
     }
 
     /**
@@ -123,8 +120,10 @@ public class GameActivity extends AppCompatActivity {
      */
     public void resetGame(){
         GAME_STATE= Constants.GAME_STATE.NOT_STARTED;
+        GameActivity.time=0;
         initToolBarButtons();
         createMineCounter();
+        createTimer();
         setUpNewGrid();
     }
     /**
@@ -134,7 +133,6 @@ public class GameActivity extends AppCompatActivity {
         createSmiley();
         createHintButton();
         createActionButton();
-        createTimer();
 
     }
     /**
@@ -161,7 +159,7 @@ public class GameActivity extends AppCompatActivity {
      */
     private void setUpGridListeners(){
         final GridView myMinesweeperGrid = findViewById(R.id.myMinesweeperGrid);
-        myMinesweeperGrid.setNumColumns(difficulty.getWidth());
+        myMinesweeperGrid.setNumColumns(gameGrid.getDifficulty().getWidth());
         myMinesweeperGrid.setAdapter(myAdapter);
         myMinesweeperGrid.setOnItemClickListener(new GridListeners.GridOnItemClickListener(gameGrid,mySmileyButton,mineCounter,gameTimer,myAdapter));
         myMinesweeperGrid.setOnItemLongClickListener(new GridListeners.GridOnItemLongClickListener(gameGrid,mineCounter,myAdapter));
@@ -191,7 +189,6 @@ public class GameActivity extends AppCompatActivity {
                         if(GAME_STATE==Constants.GAME_STATE.PLAYING){
                             warningDialog.show();}
                         else if (GAME_STATE !=Constants.GAME_STATE.NOT_STARTED) {
-                            resetCorrectMoves();
                             resetGame();
                         }
                         else{
@@ -291,7 +288,6 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 clickVibrate(1);
-                GameActivity.resetCorrectMoves();
                 warningDialog.dismiss();
                 resetGame();
             }

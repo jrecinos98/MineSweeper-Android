@@ -2,12 +2,9 @@ package com.game.recinos.myminesweepergame.util;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
-import android.view.MotionEvent;
-import android.view.View;
 
-import com.game.recinos.myminesweepergame.R;
-import com.game.recinos.myminesweepergame.Views.Grid.GridComponent;
-import com.game.recinos.myminesweepergame.Views.Grid.GridComponent;
+import com.game.recinos.myminesweepergame.Grid.Grid;
+import com.game.recinos.myminesweepergame.Grid.GridComponent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,16 +56,16 @@ public class Util {
     /**
      * Saves the current game (this) into a serialized file
      */
-    public void save(Context context, String fileName) {
+    public static void save(Context context, String fileName, Grid gameGrid) {
         //For Internal Storage.
         File path = context.getFilesDir();
         //For External Storage SD.
         File pathExt= context.getExternalFilesDir(null);
-        File file = new File(path, "GameSave.ser");
+        File file = new File(path, fileName);
         try {
-            FileOutputStream fileOutputStream = context.openFileOutput("GameSave.ser", Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(this);
+            objectOutputStream.writeObject(gameGrid);
             objectOutputStream.close();
             fileOutputStream.close();
         } catch (IOException e) {

@@ -1,4 +1,4 @@
-package com.game.recinos.myminesweepergame.Views.Grid;
+package com.game.recinos.myminesweepergame.CustomViews.Grid;
 
 import android.content.Context;
 
@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import com.game.recinos.myminesweepergame.R;
 
 import java.io.Serializable;
 

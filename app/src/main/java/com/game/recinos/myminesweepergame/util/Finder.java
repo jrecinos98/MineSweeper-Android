@@ -1,9 +1,7 @@
 package com.game.recinos.myminesweepergame.util;
 
-import com.game.recinos.myminesweepergame.GameActivity;
-import com.game.recinos.myminesweepergame.Views.Grid.Cell;
-import com.game.recinos.myminesweepergame.Views.Grid.Grid;
-import com.game.recinos.myminesweepergame.Views.Grid.GridComponent;
+import com.game.recinos.myminesweepergame.Grid.Grid;
+import com.game.recinos.myminesweepergame.Grid.GridComponent;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -59,12 +57,12 @@ public abstract class Finder {
         for(int k=rowStart; k<=rowEnd; k++){
             for(int n=colStart; n<=colEnd; n++){
                 if(grid.getCell(k,n).isOpenable() && grid.getCell(k,n).getValue()==0) {
-                    GameActivity.incrementCorrectMoves();
+                    grid.incrementCorrectMoves();
                     grid.getCell(k,n).setOpened();
                     stack.push(grid.getCell(k, n));
                 }
                 else if (grid.getCell(k,n).isOpenable()){
-                    GameActivity.incrementCorrectMoves();
+                    grid.incrementCorrectMoves();
                     grid.getCell(k,n).setOpened();
                    // grid.addVisibleCell(grid.getCell(k,n));
                 }

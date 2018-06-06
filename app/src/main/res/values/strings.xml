@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MineSweeper</string>
+    <string name="app_name">Minesweeper</string>
     <string name="warning">Warning</string>
     <string name="defaultDialog">Are you Sure you want to reset the current game?</string>
     <string name="gameOver">Game Over</string>

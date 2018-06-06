@@ -18,7 +18,6 @@ import com.game.recinos.myminesweepergame.Constants.Constants;
 import com.game.recinos.myminesweepergame.GameActivity;
 import com.game.recinos.myminesweepergame.R;
 import com.game.recinos.myminesweepergame.SettingsActivity;
-import com.game.recinos.myminesweepergame.Views.Grid.Grid;
 import com.game.recinos.myminesweepergame.util.Util;
 
 /**
@@ -212,7 +211,7 @@ public abstract class ButtonListeners {
             difficulty.setEnumHeight(rowNum);
             difficulty.setMineNum(mineNum);
             Intent toGame= new Intent(mContext,GameActivity.class);
-            toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             toGame.putExtra("GAME_DIFFICULTY", difficulty);
             myCustomDialog.dismiss();
             mContext.startActivity(toGame);

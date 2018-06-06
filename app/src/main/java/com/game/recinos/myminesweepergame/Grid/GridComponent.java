@@ -1,6 +1,4 @@
-package com.game.recinos.myminesweepergame.Views.Grid;
-
-import android.content.Context;
+package com.game.recinos.myminesweepergame.Grid;
 
 import com.game.recinos.myminesweepergame.R;
 

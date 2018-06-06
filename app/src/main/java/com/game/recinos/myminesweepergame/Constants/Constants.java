@@ -17,7 +17,8 @@ public abstract class Constants implements Serializable {
         LOST,
         WON,
         NOT_STARTED,
-        PAUSED
+        PAUSED,
+        RELOADED
     }
     public enum GAME_DIFFICULTY{
         EASY(12,19,15,160),
