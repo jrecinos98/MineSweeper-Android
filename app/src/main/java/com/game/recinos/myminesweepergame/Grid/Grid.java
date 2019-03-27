@@ -30,7 +30,7 @@ public class Grid implements Serializable, Parcelable{
         gameGrid = Util.generateInitial(getGridWidth(),getGridHeight());
     }
     public Grid(Parcel savedState){
-        Bundle saved= savedState.readBundle();
+        Bundle saved= savedState.readBundle(getClass().getClassLoader());
         flagNum= saved.getInt("Flags");
         GAME_DIFFICULTY= (Constants.GAME_DIFFICULTY) saved.get("Difficulty");
         correctMoves= saved.getInt("Moves");

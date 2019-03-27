@@ -56,14 +56,16 @@ public class MenuActivity extends AppCompatActivity {
         myMediumButton.setOnClickListener(new ButtonListeners.DifficultyButtonListener(getApplicationContext(), Constants.GAME_DIFFICULTY.MEDIUM));
         myHardButton.setOnClickListener(new ButtonListeners.DifficultyButtonListener(getApplicationContext(), Constants.GAME_DIFFICULTY.HARD));
         myLoadButton.setOnClickListener(new ButtonListeners.LoadListener(getApplicationContext()));
+        //Creates the Dialog box (Not visible initially)
+        createSizeCustom();
         myCustomButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                createSizeCustom();
                 myCustomDialog.show();
             }
         });
     }
+    //Create the one that asks about columns and rows.
     public void createCustom(){
         android.app.AlertDialog.Builder wonBuilder= new android.app.AlertDialog.Builder(MenuActivity.this);
         final View wonView= getLayoutInflater().inflate(com.game.recinos.myminesweepergame.R.layout.dialog_custom,null);
@@ -73,6 +75,8 @@ public class MenuActivity extends AppCompatActivity {
         myCustomDialog.setCanceledOnTouchOutside(false);
         myGoButton.setOnClickListener(new ButtonListeners.CustomGoListener(getApplicationContext(),wonView,myCustomDialog));
     }
+
+    //Creates the slider Dialog
     public void createSizeCustom(){
         android.app.AlertDialog.Builder sizeBuilder= new android.app.AlertDialog.Builder(MenuActivity.this);
         final View sizeView= getLayoutInflater().inflate(com.game.recinos.myminesweepergame.R.layout.dialog_size,null);

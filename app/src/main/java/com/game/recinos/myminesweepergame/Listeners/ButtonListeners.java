@@ -146,8 +146,10 @@ public abstract class ButtonListeners {
         Display display;
         GridView sizeGrid;
         Context mContext;
+        //Only needed to dismiss the dialog
         AlertDialog myCustomDialog;
         Constants.DifficultyWrap wrapper;
+        double colInGrid=3.0;
         public SliderCustomButton(Context context,Display display, GridView sizeGrid, Constants.DifficultyWrap wrap, AlertDialog dialog){
             this.display=display;
             this.sizeGrid= sizeGrid;
@@ -155,35 +157,42 @@ public abstract class ButtonListeners {
             mContext=context;
             myCustomDialog= dialog;
         }
+        private int getColNum(double DisplayWidth, double requested){
+            int tempCol= (int) (DisplayWidth/requested);
+            //The number of pixels remaining smaller than a block.
+            double leftOverSpace= DisplayWidth%requested;
+            //If the leftOverSpace is greater than 1/3 the block then add an extra block
+            if(leftOverSpace>requested/4){
+                tempCol++;
+            }
+            return tempCol;
+        }
         @Override
         public void onClick(View v){
             Constants.GAME_DIFFICULTY difficulty= wrapper.getDifficulty();
             Point size = new Point();
             display.getSize(size);
-            int DisplayWidth = size.x;
-            int DisplayHeight = size.y;
-            //The desired width for each individual cell.
-            double desiredWidth= sizeGrid.getLayoutParams().width/3;
-            //The possible amount of blocks on screen
-            int availableBlocks= (int)(DisplayWidth/desiredWidth);
-            //The number of pixels remaining smaller than a block.
-            double leftOverSpace= DisplayWidth%desiredWidth;
-            //If the leftOverSpace is greater than 1/3 the block then add an extra block
-            if(leftOverSpace>desiredWidth/3){
-                availableBlocks++;
-            }
-            int newWidth= DisplayWidth/availableBlocks;
             int toolbarHeight= difficulty.getToolBarHeight();
-            int rowNum= (int)((DisplayHeight-toolbarHeight)/newWidth);
-            double leftOverHeight= ((DisplayHeight-toolbarHeight)%newWidth);
+            double DisplayWidth = size.x;
+            double newHeight = size.y - toolbarHeight;
+
+            //The requested width for each individual cell.
+            double requestedSize= sizeGrid.getLayoutParams().width / colInGrid;
+            //The possible amount of columns on screen
+            int colAmount= getColNum(DisplayWidth, requestedSize);
+            //After obtaining the number of columns get the size of the blocks
+            double blockSize= DisplayWidth/colAmount;
+
+            int rowNum= (int)((newHeight)/blockSize);
+            double leftOverHeight= (newHeight %blockSize);
             Log.d("LEFTOVER", leftOverHeight+"");
-            Log.d("DESIRED", newWidth+"");
-            /*if(leftOverHeight<newWidth){
+            Log.d("WIDTH", blockSize+"");
+            if(leftOverHeight<blockSize){
                 toolbarHeight+=leftOverHeight;
+                rowNum--;
             }
-            /*else{
-                toolbarHeight+=leftOverHeight;
-            }*/
+
+            Log.d("ROWNUM", rowNum+"");
             Log.d("TOOLBAR", toolbarHeight+"");
             Log.d("MINES", difficulty+"");
             int mines=0;
@@ -192,24 +201,25 @@ public abstract class ButtonListeners {
                     mines=12;
                     break;
                 case MEDIUM:
-                    mines=29;
+                    mines=30;
                     break;
                 case HARD:
                     mines=50;
                     break;
             }
-            int mineNum= (int)Math.sqrt(mines-(mines/2))*availableBlocks;
-            if (difficulty==Constants.GAME_DIFFICULTY.HARD && availableBlocks<10){
+            int mineNum= (int)Math.sqrt(mines-(mines/2))*colAmount;
+            if (difficulty==Constants.GAME_DIFFICULTY.HARD && colAmount<10){
                 mineNum-=11;
             }
-            if(availableBlocks<10){
+            if(colAmount<10){
                 mineNum-=4;
             }
             difficulty=Constants.GAME_DIFFICULTY.CUSTOM;
             difficulty.setToolBarHeight(toolbarHeight);
-            difficulty.setEnumWidth(availableBlocks);
+            difficulty.setEnumWidth(colAmount);
             difficulty.setEnumHeight(rowNum);
             difficulty.setMineNum(mineNum);
+            Log.d("NEWTOOL", difficulty.getToolBarHeight()+"");
             Intent toGame= new Intent(mContext,GameActivity.class);
             toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             toGame.putExtra("GAME_DIFFICULTY", difficulty);
