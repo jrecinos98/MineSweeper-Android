@@ -21,9 +21,9 @@ public abstract class Constants implements Serializable {
         RELOADED
     }
     public enum GAME_DIFFICULTY{
-        EASY(12,19,15,160),
-        MEDIUM(15,24,45,160),
-        HARD(20,32,110,160),
+        EASY(12,19,15,200),
+        MEDIUM(15,24,45,200),
+        HARD(20,32,110,200),
         LOAD,
         CUSTOM;
 

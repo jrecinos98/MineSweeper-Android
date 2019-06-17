@@ -23,12 +23,15 @@ public class Grid implements Serializable, Parcelable{
     private Constants.GAME_DIFFICULTY GAME_DIFFICULTY;
     private int flagNum;
     private int correctMoves=0;
+
+
     @SuppressLint("ClickableViewAccessibility")
     public Grid(Constants.GAME_DIFFICULTY diff){
         GAME_DIFFICULTY=diff;
         flagNum=getMineNum();
         gameGrid = Util.generateInitial(getGridWidth(),getGridHeight());
     }
+
     public Grid(Parcel savedState){
         Bundle saved= savedState.readBundle(getClass().getClassLoader());
         flagNum= saved.getInt("Flags");

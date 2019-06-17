@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -53,7 +54,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GAME_STATE= Constants.GAME_STATE.NOT_STARTED;
-        int ToolBarHeight= Constants.TOOLBAR_HEIGHT;
+        int ToolBarHeight= Integer.parseInt(getIntent().getStringExtra("TOOLBAR_HEIGHT"));
         vibe= (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         setContentView(R.layout.activity_main);
         //Reason why toolbar is not increasing right
@@ -63,12 +64,12 @@ public class GameActivity extends AppCompatActivity {
             GameActivity.GAME_STATE= Constants.GAME_STATE.RELOADED;
             GameActivity.time= savedInstanceState.getInt("Time");
             difficulty= (Constants.GAME_DIFFICULTY) savedInstanceState.getSerializable("Difficulty");
-            //Difficulty must be defined before MineConter created.
+            //Difficulty must be defined before MineCounter created.
             createMineCounter();
             createTimer();
             reloadGame(savedInstanceState);
 
-            Toast.makeText(getApplicationContext(),"Game Has Been reloaded", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Game Has Been Reloaded", Toast.LENGTH_LONG).show();
         }
         else {
             difficulty = (Constants.GAME_DIFFICULTY) getIntent().getSerializableExtra("GAME_DIFFICULTY");

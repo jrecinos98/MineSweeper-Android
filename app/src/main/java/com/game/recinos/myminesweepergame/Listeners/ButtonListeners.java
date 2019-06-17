@@ -39,6 +39,8 @@ public abstract class ButtonListeners {
             Intent toGame= new Intent(mContext,GameActivity.class);
             toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             toGame.putExtra("GAME_DIFFICULTY", difficulty);
+            String t_height= Integer.toString(difficulty.getToolBarHeight());
+            toGame.putExtra("TOOLBAR_HEIGHT", t_height);
             mContext.startActivity(toGame);
         }
     }
@@ -58,6 +60,10 @@ public abstract class ButtonListeners {
                 Intent toGame= new Intent(mContext,GameActivity.class);
                 difficulty=Constants.GAME_DIFFICULTY.LOAD;
                 toGame.putExtra("GAME_DIFFICULTY",difficulty);
+                String t_height= Integer.toString(difficulty.getToolBarHeight());
+
+                toGame.putExtra("TOOLBAR_HEIGHT", t_height);
+
                 mContext.startActivity(toGame);
             }
             else{
@@ -149,6 +155,7 @@ public abstract class ButtonListeners {
         //Only needed to dismiss the dialog
         AlertDialog myCustomDialog;
         Constants.DifficultyWrap wrapper;
+        //Num of columns in demo grid
         double colInGrid=3.0;
         public SliderCustomButton(Context context,Display display, GridView sizeGrid, Constants.DifficultyWrap wrap, AlertDialog dialog){
             this.display=display;
@@ -167,6 +174,40 @@ public abstract class ButtonListeners {
             }
             return tempCol;
         }
+
+        public int getMines(Constants.GAME_DIFFICULTY difficulty, int colAmount){
+            int mines=0;
+            switch(difficulty){
+                case EASY:
+                    mines=12;
+                    break;
+                case MEDIUM:
+                    mines=30;
+                    break;
+                case HARD:
+                    mines=50;
+                    break;
+            }
+            int mineNum= (int) Math.sqrt(mines-(mines/2))*colAmount;
+            if (difficulty==Constants.GAME_DIFFICULTY.HARD && colAmount<10){
+                mineNum-=11;
+            }
+            if(colAmount<10){
+                mineNum-=4;
+            }
+            return mineNum;
+
+        }
+
+        public Constants.GAME_DIFFICULTY generateCustomDiff(int toolbarHeight, int colAmount, int rowNum, int mineNum){
+            Constants.GAME_DIFFICULTY difficulty;
+            difficulty=Constants.GAME_DIFFICULTY.CUSTOM;
+            difficulty.setToolBarHeight(toolbarHeight);
+            difficulty.setEnumWidth(colAmount);
+            difficulty.setEnumHeight(rowNum);
+            difficulty.setMineNum(mineNum);
+            return difficulty;
+        }
         @Override
         public void onClick(View v){
             Constants.GAME_DIFFICULTY difficulty= wrapper.getDifficulty();
@@ -183,46 +224,24 @@ public abstract class ButtonListeners {
             //After obtaining the number of columns get the size of the blocks
             double blockSize= DisplayWidth/colAmount;
 
-            int rowNum= (int)((newHeight)/blockSize);
+            int rowNum= (int)((newHeight)/blockSize)+1;
             double leftOverHeight= (newHeight %blockSize);
-            Log.d("LEFTOVER", leftOverHeight+"");
-            Log.d("WIDTH", blockSize+"");
             if(leftOverHeight<blockSize){
                 toolbarHeight+=leftOverHeight;
                 rowNum--;
             }
+            int mineNum= getMines(difficulty, colAmount);
+            //Generates Custom Difficulty
+            difficulty= generateCustomDiff(toolbarHeight, colAmount, rowNum, mineNum);
 
-            Log.d("ROWNUM", rowNum+"");
-            Log.d("TOOLBAR", toolbarHeight+"");
-            Log.d("MINES", difficulty+"");
-            int mines=0;
-            switch(difficulty){
-                case EASY:
-                    mines=12;
-                    break;
-                case MEDIUM:
-                    mines=30;
-                    break;
-                case HARD:
-                    mines=50;
-                    break;
-            }
-            int mineNum= (int)Math.sqrt(mines-(mines/2))*colAmount;
-            if (difficulty==Constants.GAME_DIFFICULTY.HARD && colAmount<10){
-                mineNum-=11;
-            }
-            if(colAmount<10){
-                mineNum-=4;
-            }
-            difficulty=Constants.GAME_DIFFICULTY.CUSTOM;
-            difficulty.setToolBarHeight(toolbarHeight);
-            difficulty.setEnumWidth(colAmount);
-            difficulty.setEnumHeight(rowNum);
-            difficulty.setMineNum(mineNum);
-            Log.d("NEWTOOL", difficulty.getToolBarHeight()+"");
             Intent toGame= new Intent(mContext,GameActivity.class);
             toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             toGame.putExtra("GAME_DIFFICULTY", difficulty);
+
+            //Pass height separately
+            String t_height= Integer.toString(difficulty.getToolBarHeight());
+            toGame.putExtra("TOOLBAR_HEIGHT", t_height);
+            //Dismiss dialog
             myCustomDialog.dismiss();
             mContext.startActivity(toGame);
         }
