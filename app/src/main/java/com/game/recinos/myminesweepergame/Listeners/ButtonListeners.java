@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.game.recinos.myminesweepergame.Constants.Constants;
 import com.game.recinos.myminesweepergame.GameActivity;
+import com.game.recinos.myminesweepergame.Grid.Grid;
 import com.game.recinos.myminesweepergame.R;
 import com.game.recinos.myminesweepergame.SettingsActivity;
 import com.game.recinos.myminesweepergame.util.Util;
@@ -24,126 +26,6 @@ import com.game.recinos.myminesweepergame.util.Util;
  * A container class for various OnClickListener implementations
  */
 public abstract class ButtonListeners {
-    /**
-     * Launches the game with specified difficulty
-     */
-    public static class DifficultyButtonListener implements  View.OnClickListener{
-        Context mContext;
-        Constants.GAME_DIFFICULTY difficulty;
-        public DifficultyButtonListener(Context context, Constants.GAME_DIFFICULTY diff){
-            mContext=context;
-            difficulty=diff;
-        }
-        @Override
-        public void onClick(View v) {
-            Intent toGame= new Intent(mContext,GameActivity.class);
-            toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            toGame.putExtra("GAME_DIFFICULTY", difficulty);
-            String t_height= Integer.toString(difficulty.getToolBarHeight());
-            toGame.putExtra("TOOLBAR_HEIGHT", t_height);
-            mContext.startActivity(toGame);
-        }
-    }
-
-    /**
-     * Signifies the game that the game should be loaded from save file.
-     */
-    public static class LoadListener implements View.OnClickListener{
-        Context mContext;
-        Constants.GAME_DIFFICULTY difficulty;
-        public LoadListener(Context mcontext) {
-            mContext=mcontext;
-        }
-        @Override
-        public void onClick(View v) {
-            if(Util.saveExist("GameSave.ser")){
-                Intent toGame= new Intent(mContext,GameActivity.class);
-                difficulty=Constants.GAME_DIFFICULTY.LOAD;
-                toGame.putExtra("GAME_DIFFICULTY",difficulty);
-                String t_height= Integer.toString(difficulty.getToolBarHeight());
-
-                toGame.putExtra("TOOLBAR_HEIGHT", t_height);
-
-                mContext.startActivity(toGame);
-            }
-            else{
-                Toast.makeText(mContext, "No Save File Exists", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    /**
-     * Launches the settings activity
-     */
-    public static class SettingsListener implements View.OnClickListener{
-        Context mContext;
-        public SettingsListener(Context mcontext) {
-            mContext=mcontext;
-        }
-        @Override
-        public void onClick(View v) {
-            Intent settingsIntent= new Intent(mContext, SettingsActivity.class);
-            settingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(settingsIntent);
-        }
-    }
-
-    /**
-     * Button opens a dialog where the user can input the number of desired columns, rows and mines.
-     */
-    public static class CustomGoListener implements View.OnClickListener{
-        Context mContext;
-        Constants.GAME_DIFFICULTY difficulty;
-        View wonView;
-        AlertDialog myCustomDialog;
-        public CustomGoListener(Context mcontext, View won, AlertDialog dialog) {
-            mContext=mcontext;
-            wonView=won;
-            myCustomDialog=dialog;
-        }
-        @Override
-        public void onClick(View v) {
-            EditText myColText= wonView.findViewById(R.id.myColText);
-            EditText myRowText= wonView.findViewById(R.id.myRowText);
-            EditText myMinetext= wonView.findViewById(R.id.myMineText);
-            if(myRowText.getText().toString().equals("")){
-                Toast.makeText(mContext, "Please enter the number of rows", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if(myColText.getText().toString().equals("")){
-                Toast.makeText(mContext, "Please enter the number of columns", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if(myMinetext.getText().toString().equals("")){
-                Toast.makeText(mContext, "Please enter the number of mines", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            int rowNum=Integer.parseInt(myColText.getText().toString());
-            int colNum=Integer.parseInt(myRowText.getText().toString());
-            int mineNum= Integer.parseInt(myMinetext.getText().toString());
-            if(colNum>20){
-                colNum=20;
-            }
-            if(rowNum>100){
-                rowNum=100;
-            }
-            if(mineNum > (colNum*rowNum-9)){
-                mineNum=colNum*rowNum-9;
-            }
-            if(mineNum>colNum*rowNum){
-                mineNum=999;
-            }
-            difficulty= Constants.GAME_DIFFICULTY.CUSTOM;
-            difficulty.setEnumWidth(colNum);
-            difficulty.setEnumHeight(rowNum);
-            difficulty.setMineNum(mineNum);
-            Intent toGame= new Intent(mContext,GameActivity.class);
-            toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            toGame.putExtra("GAME_DIFFICULTY", difficulty);
-            myCustomDialog.dismiss();
-            mContext.startActivity(toGame);
-        }
-    }
 
     /**
      * Launches the game using the values from the size of the Grid and the difficulty.
@@ -157,6 +39,7 @@ public abstract class ButtonListeners {
         Constants.DifficultyWrap wrapper;
         //Num of columns in demo grid
         double colInGrid=3.0;
+
         public SliderCustomButton(Context context,Display display, GridView sizeGrid, Constants.DifficultyWrap wrap, AlertDialog dialog){
             this.display=display;
             this.sizeGrid= sizeGrid;
@@ -241,12 +124,143 @@ public abstract class ButtonListeners {
             //Pass height separately
             String t_height= Integer.toString(difficulty.getToolBarHeight());
             toGame.putExtra("TOOLBAR_HEIGHT", t_height);
-            //Dismiss dialog
+
             myCustomDialog.dismiss();
             mContext.startActivity(toGame);
         }
     }
 
+    /**
+     * Signifies the game that the game should be loaded from save file.
+     */
+    public static class LoadListener implements View.OnClickListener{
+        Context mContext;
+        Constants.GAME_DIFFICULTY difficulty;
+        public LoadListener(Context mcontext) {
+            mContext=mcontext;
+        }
+        @Override
+        public void onClick(View v) {
+            if(Util.saveExist(Constants.SAVE_NAME, mContext.fileList())){
+                Object items[]= Util.loadGame(mContext,Constants.SAVE_NAME);
+                Grid loaded=  (Grid) items[0];
+                difficulty=loaded.getDifficulty();
+                Integer time= (Integer) items[1];
+
+                Intent toGame= new Intent(mContext,GameActivity.class);
+                toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                toGame.putExtra("GAME_DIFFICULTY",difficulty);
+                String t_height= Integer.toString(difficulty.getToolBarHeight());
+                toGame.putExtra("TOOLBAR_HEIGHT", t_height);
+
+                //Use a bundle to pass serialized objects to the next activity.
+                Bundle bundle= new Bundle();
+                bundle.putSerializable("GAME_GRID", loaded);
+                bundle.putInt("TIME", time);
+                toGame.putExtras(bundle);
+                mContext.startActivity(toGame);
+            }
+            else{
+                Toast.makeText(mContext, "No Save File Exists", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * Launches the settings activity
+     */
+    public static class SettingsListener implements View.OnClickListener{
+        Context mContext;
+        public SettingsListener(Context mcontext) {
+            mContext=mcontext;
+        }
+        @Override
+        public void onClick(View v) {
+            Intent settingsIntent= new Intent(mContext, SettingsActivity.class);
+            settingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(settingsIntent);
+        }
+    }
+
+
+
+
+    /**
+     * Launches the game with specified difficulty
+     */
+    public static class DifficultyButtonListener implements  View.OnClickListener{
+        Context mContext;
+        Constants.GAME_DIFFICULTY difficulty;
+        public DifficultyButtonListener(Context context, Constants.GAME_DIFFICULTY diff){
+            mContext=context;
+            difficulty=diff;
+        }
+        @Override
+        public void onClick(View v) {
+            Intent toGame= new Intent(mContext,GameActivity.class);
+            toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            toGame.putExtra("GAME_DIFFICULTY", difficulty);
+            String t_height= Integer.toString(difficulty.getToolBarHeight());
+            toGame.putExtra("TOOLBAR_HEIGHT", t_height);
+            mContext.startActivity(toGame);
+        }
+    }
+    /**
+     * Button opens a dialog where the user can input the number of desired columns, rows and mines.
+     */
+    public static class CustomGoListener implements View.OnClickListener{
+        Context mContext;
+        Constants.GAME_DIFFICULTY difficulty;
+        View wonView;
+        AlertDialog myCustomDialog;
+        public CustomGoListener(Context mcontext, View won, AlertDialog dialog) {
+            mContext=mcontext;
+            wonView=won;
+            myCustomDialog=dialog;
+        }
+        @Override
+        public void onClick(View v) {
+            EditText myColText= wonView.findViewById(R.id.myColText);
+            EditText myRowText= wonView.findViewById(R.id.myRowText);
+            EditText myMinetext= wonView.findViewById(R.id.myMineText);
+            if(myRowText.getText().toString().equals("")){
+                Toast.makeText(mContext, "Please enter the number of rows", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(myColText.getText().toString().equals("")){
+                Toast.makeText(mContext, "Please enter the number of columns", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(myMinetext.getText().toString().equals("")){
+                Toast.makeText(mContext, "Please enter the number of mines", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            int rowNum=Integer.parseInt(myColText.getText().toString());
+            int colNum=Integer.parseInt(myRowText.getText().toString());
+            int mineNum= Integer.parseInt(myMinetext.getText().toString());
+            if(colNum>20){
+                colNum=20;
+            }
+            if(rowNum>100){
+                rowNum=100;
+            }
+            if(mineNum > (colNum*rowNum-9)){
+                mineNum=colNum*rowNum-9;
+            }
+            if(mineNum>colNum*rowNum){
+                mineNum=999;
+            }
+            difficulty= Constants.GAME_DIFFICULTY.CUSTOM;
+            difficulty.setEnumWidth(colNum);
+            difficulty.setEnumHeight(rowNum);
+            difficulty.setMineNum(mineNum);
+            Intent toGame= new Intent(mContext,GameActivity.class);
+            toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            toGame.putExtra("GAME_DIFFICULTY", difficulty);
+            myCustomDialog.dismiss();
+            mContext.startActivity(toGame);
+        }
+    }
 
     /**
      * Clicking on the action listener changes the image and changes the tag in GameActivity.

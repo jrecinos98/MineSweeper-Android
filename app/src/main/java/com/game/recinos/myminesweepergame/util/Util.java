@@ -1,8 +1,11 @@
 package com.game.recinos.myminesweepergame.util;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
+import com.game.recinos.myminesweepergame.Constants.Constants;
 import com.game.recinos.myminesweepergame.Grid.Grid;
 import com.game.recinos.myminesweepergame.Grid.GridComponent;
 
@@ -56,16 +59,13 @@ public class Util {
     /**
      * Saves the current game (this) into a serialized file
      */
-    public static void save(Context context, String fileName, Grid gameGrid) {
-        //For Internal Storage.
-        File path = context.getFilesDir();
-        //For External Storage SD.
-        File pathExt= context.getExternalFilesDir(null);
-        File file = new File(path, fileName);
+    public static <T extends Serializable> void save(Context context, String fileName, T objectToSave) {
         try {
             FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(gameGrid);
+
+            objectOutputStream.writeObject(objectToSave);
+
             objectOutputStream.close();
             fileOutputStream.close();
         } catch (IOException e) {
@@ -80,7 +80,10 @@ public class Util {
      *
      * @return the serializable object.
      */
-    public static<T extends Serializable> T loadPreviousGame(Context context, String fileName) {
+    public static<T extends Serializable> T loadGame(Context context, String fileName) {
+        if (!saveExist(fileName, context.fileList())){
+            return null;
+        }
         T save = null;
         try {
             FileInputStream fileInputStream = context.openFileInput(fileName);
@@ -99,14 +102,26 @@ public class Util {
      * @param context The application context.
      */
     public static void deleteSave(Context context, String fileName) {
-        if(saveExist(fileName))
-            context.deleteFile("GameSave.ser");
+        if(saveExist(fileName,context.fileList()))
+            context.deleteFile(fileName);
     }
     /**
      * Checks whether a save file exists.
      * @return true if save file exists and false otherwise
      */
-    public static boolean saveExist(String fileName){
-        return (new File(fileName).exists());
+    public static boolean saveExist(String fileName, String[] files){
+        for (String file : files) {
+            if (file.equals(fileName)) {
+                Log.d("Save", "True");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void saveToBundle(Bundle outState, Grid game, Constants.GAME_DIFFICULTY diff, Integer time){
+        outState.putParcelable("GameGrid", game);
+        outState.putSerializable("Difficulty", diff);
+        outState.putInt("Time", time);
     }
 }

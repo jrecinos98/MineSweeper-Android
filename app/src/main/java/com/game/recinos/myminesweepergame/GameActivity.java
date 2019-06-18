@@ -25,6 +25,11 @@ import com.game.recinos.myminesweepergame.util.Util;
 
 import android.widget.Toast;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 
 @SuppressWarnings("ClickableViewAccessibility")
 public class GameActivity extends AppCompatActivity {
@@ -60,22 +65,47 @@ public class GameActivity extends AppCompatActivity {
         //Reason why toolbar is not increasing right
         setToolBarHeight(ToolBarHeight);
         initToolBarButtons();
-        if(savedInstanceState != null){
+
+        //Will occur when user was playing and went idle. Make sure the game wasn't over. If it did start a new one
+        if(savedInstanceState != null && savedInstanceState.getSerializable("GameGrid") != null){
             GameActivity.GAME_STATE= Constants.GAME_STATE.RELOADED;
             GameActivity.time= savedInstanceState.getInt("Time");
             difficulty= (Constants.GAME_DIFFICULTY) savedInstanceState.getSerializable("Difficulty");
             //Difficulty must be defined before MineCounter created.
             createMineCounter();
             createTimer();
-            reloadGame(savedInstanceState);
+            reloadGame((Grid) savedInstanceState.getParcelable("GameGrid"));
 
             Toast.makeText(getApplicationContext(),"Game Has Been Reloaded", Toast.LENGTH_LONG).show();
         }
         else {
-            difficulty = (Constants.GAME_DIFFICULTY) getIntent().getSerializableExtra("GAME_DIFFICULTY");
-            createMineCounter();
-            createTimer();
-            setUpNewGrid();
+            Grid loaded= (Grid)getIntent().getExtras().getSerializable("GAME_GRID");
+
+            //If grid is null then the game wasn't read from a file
+            if(loaded == null){
+                difficulty = (Constants.GAME_DIFFICULTY) getIntent().getSerializableExtra("GAME_DIFFICULTY");
+                //If it is null it means that it didn't come from an intent but rather the game is reloaded from bundle.
+                //Will only happen when user loses and leaves app. We want to reload a new game at that point with the same difficulty
+                if (difficulty == null){
+                    difficulty= (Constants.GAME_DIFFICULTY) savedInstanceState.getSerializable("Difficulty");
+                    time=0;
+                }
+                createMineCounter();
+                createTimer();
+                setUpNewGrid();
+            }
+            else{
+                //Here means that the game was loaded from a file so we reload everything
+                Log.d("Reload", "Game has been reloaded");
+                Bundle reloaded= getIntent().getExtras();
+                GameActivity.GAME_STATE= Constants.GAME_STATE.RELOADED;
+                GameActivity.time=  (Integer) reloaded.getInt("TIME");
+                difficulty = (Constants.GAME_DIFFICULTY) getIntent().getSerializableExtra("GAME_DIFFICULTY");
+                createMineCounter();
+                createTimer();
+                reloadGame(loaded);
+            }
+
         }
         initWonDialog();
         initWarningDialog();
@@ -88,10 +118,15 @@ public class GameActivity extends AppCompatActivity {
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable("GameGrid", gameGrid);
-        outState.putSerializable("Difficulty", difficulty);
-        outState.putInt("Time", GameActivity.time);
-        super.onSaveInstanceState(outState);
+        if(GAME_STATE != Constants.GAME_STATE.LOST){
+            //User didnt lose so restore previous game
+            Util.saveToBundle(outState, gameGrid, difficulty, time);
+            super.onSaveInstanceState(outState);
+        }
+        else{
+            //User lost. Reload grid with the same difficulty
+            outState.putSerializable("Difficulty", difficulty);
+        }
     }
     protected  void onPause(){
         super.onPause();
@@ -110,12 +145,26 @@ public class GameActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed(){
-        Util.save(getApplicationContext(), "GameSave.ser", gameGrid);
-        GameActivity.time=0;
         super.onBackPressed();
+        //If game was lost don't save it
+        if(GAME_STATE != Constants.GAME_STATE.LOST) {
+            Bundle bundle= new Bundle();
+
+            //Put all objects to be saved into an Object array
+            Object items[]= new Object[2];
+            items[0]= gameGrid;
+            items[1]=time;
+
+            Util.save(getApplicationContext(), Constants.SAVE_NAME, items);
+            GameActivity.time = 0;
+            Log.d("Save", String.valueOf(Util.saveExist(Constants.SAVE_NAME, fileList())));
+        }
+        else{
+            //User lost so delete previous save file
+            Util.deleteSave(getApplicationContext(),Constants.SAVE_NAME);
+        }
         //resetGame();
     }
-
     /**
      * resets game
      */
@@ -149,11 +198,11 @@ public class GameActivity extends AppCompatActivity {
      * when an activity goes idle we restore the grid.
      * @param saved
      */
-    public void reloadGame(Bundle saved){
-        gameGrid= (Grid) saved.getParcelable("GameGrid");
+    public void reloadGame(Grid saved){
+        gameGrid= saved;
         setGridAdapter();
         setUpGridListeners();
-        }
+    }
 
     /**
      * Sets up the GridListeners for the grid.

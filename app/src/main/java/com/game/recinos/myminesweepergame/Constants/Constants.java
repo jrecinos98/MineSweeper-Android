@@ -49,7 +49,8 @@ public abstract class Constants implements Serializable {
         public void setToolBarHeight(int t){toolBarHeight=t;}
 
     }
-    public final static int TOOLBAR_HEIGHT= 200;
+    public final static String SAVE_NAME= "GameSave.ser";
+
     public final static int SMILEY_NORMAL= R.drawable.normal;
     public final static int SMILEY_RESET=R.drawable.reset;
     public final static int SMILEY_SCARED=R.drawable.scared;

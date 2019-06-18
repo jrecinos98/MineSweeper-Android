@@ -213,8 +213,8 @@ public class Grid implements Serializable, Parcelable{
         data.putInt("Moves", correctMoves);
         dest.writeBundle(data);
     }
-    public static final Parcelable.Creator CREATOR
-            = new Parcelable.Creator() {
+    public static final Parcelable.Creator<Grid> CREATOR
+            = new Parcelable.Creator<Grid>() {
         public Grid createFromParcel(Parcel in) {
             return new Grid(in);
         }

@@ -3,6 +3,8 @@ package com.game.recinos.myminesweepergame;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -24,9 +26,6 @@ import com.game.recinos.myminesweepergame.Listeners.SlidersListeners;
 public class MenuActivity extends AppCompatActivity {
     public Constants.GAME_DIFFICULTY difficulty;
     AlertDialog myCustomDialog;
-    Button myEasyButton;
-    Button myMediumButton;
-    Button myHardButton;
     Button myLoadButton;
     Button myCustomButton;
     Button mySettingsButton;
@@ -39,9 +38,6 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public void initButtons(){
-        myEasyButton = findViewById(com.game.recinos.myminesweepergame.R.id.myEasyButton);
-        myMediumButton= findViewById(com.game.recinos.myminesweepergame.R.id.myMediumButton);
-        myHardButton= findViewById(com.game.recinos.myminesweepergame.R.id.myHardButton);
         myLoadButton= findViewById(com.game.recinos.myminesweepergame.R.id.myLoadButton);
         myCustomButton=findViewById(com.game.recinos.myminesweepergame.R.id.myCustomButton);
         createSettingsButton();
@@ -52,9 +48,6 @@ public class MenuActivity extends AppCompatActivity {
     }
     public void setUpListeners(){
         mySettingsButton.setOnClickListener(new ButtonListeners.SettingsListener(getApplicationContext()));
-        myEasyButton.setOnClickListener(new ButtonListeners.DifficultyButtonListener(getApplicationContext(), Constants.GAME_DIFFICULTY.EASY));
-        myMediumButton.setOnClickListener(new ButtonListeners.DifficultyButtonListener(getApplicationContext(), Constants.GAME_DIFFICULTY.MEDIUM));
-        myHardButton.setOnClickListener(new ButtonListeners.DifficultyButtonListener(getApplicationContext(), Constants.GAME_DIFFICULTY.HARD));
         myLoadButton.setOnClickListener(new ButtonListeners.LoadListener(getApplicationContext()));
         //Creates the Dialog box (Not visible initially)
         createSizeCustom();
@@ -62,6 +55,9 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 myCustomDialog.show();
+
+                //Not sure if to delete, ask for confirmation or simply let it be replaced if user starts new game
+                //Util.deleteSave(getApplicationContext(), "GameSave.ser");
             }
         });
     }
@@ -89,6 +85,7 @@ public class MenuActivity extends AppCompatActivity {
         Constants.DifficultyWrap difficultyWrap= new Constants.DifficultyWrap(customDifficulty);
         myCustomDialog= sizeBuilder.create();
         myCustomDialog.setCanceledOnTouchOutside(false);
+        myCustomDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         sizeGrid.setAdapter(new GridAdapters.SliderGrid(getApplicationContext()));
         sliderBar.setOnSeekBarChangeListener(new SlidersListeners.GridSeekBarListener(sizeGrid));
         myPlayButton.setOnClickListener(new ButtonListeners.SliderCustomButton(getApplicationContext(),getWindowManager().getDefaultDisplay(),sizeGrid,difficultyWrap,myCustomDialog));

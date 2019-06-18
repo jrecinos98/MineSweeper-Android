@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#A9A9A9"
+    android:background="@drawable/dialog_bg"
     android:paddingBottom="50dp"
     >
     <RelativeLayout
@@ -125,15 +125,17 @@
             android:text="Hard" />
 
     </LinearLayout>
+
     <Button
         android:id="@+id/customStartButton"
-        android:background="@drawable/round_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:text="Play Game!" />
+        android:background="@drawable/round_button"
+        android:text="Play Game!"
+        android:textColor="#fff" />
 
 
 
