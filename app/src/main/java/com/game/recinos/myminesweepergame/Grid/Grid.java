@@ -20,14 +20,14 @@ import java.io.Serializable;
 
 public class Grid implements Serializable, Parcelable{
     private GridComponent[][] gameGrid;
-    private Constants.GAME_DIFFICULTY GAME_DIFFICULTY;
+    private Constants.DifficultyWrap GAME_DIFFICULTY;
     private int flagNum;
     private int correctMoves=0;
 
 
     @SuppressLint("ClickableViewAccessibility")
     public Grid(Constants.GAME_DIFFICULTY diff){
-        GAME_DIFFICULTY=diff;
+        GAME_DIFFICULTY= new Constants.DifficultyWrap(diff);
         flagNum=getMineNum();
         gameGrid = Util.generateInitial(getGridWidth(),getGridHeight());
     }
@@ -35,7 +35,7 @@ public class Grid implements Serializable, Parcelable{
     public Grid(Parcel savedState){
         Bundle saved= savedState.readBundle(getClass().getClassLoader());
         flagNum= saved.getInt("Flags");
-        GAME_DIFFICULTY= (Constants.GAME_DIFFICULTY) saved.get("Difficulty");
+        GAME_DIFFICULTY= (Constants.DifficultyWrap) saved.get("Difficulty");
         correctMoves= saved.getInt("Moves");
         gameGrid= (GridComponent[][]) saved.get("Cells");
     }
@@ -61,10 +61,10 @@ public class Grid implements Serializable, Parcelable{
         return gameGrid[row][col];
     }
     public int getNumColumns(){return getGridWidth();}
-    public int getGridWidth(){return GAME_DIFFICULTY.getWidth();}
-    public int getGridHeight(){return GAME_DIFFICULTY.getHeight();}
-    public int getMineNum(){return GAME_DIFFICULTY.getMineNum();}
-    public Constants.GAME_DIFFICULTY getDifficulty(){return GAME_DIFFICULTY;}
+    public int getGridWidth(){return GAME_DIFFICULTY.getDifficulty().getWidth();}
+    public int getGridHeight(){return GAME_DIFFICULTY.getDifficulty().getHeight();}
+    public int getMineNum(){return GAME_DIFFICULTY.getDifficulty().getMineNum();}
+    public Constants.GAME_DIFFICULTY getDifficulty(){return GAME_DIFFICULTY.getDifficulty();}
     public Constants.GAME_STATE getGAME_STATE(){return GameActivity.GAME_STATE;}
     public GridComponent[][] getCells(){return gameGrid;}
     public int getFlagNum(){return flagNum;}

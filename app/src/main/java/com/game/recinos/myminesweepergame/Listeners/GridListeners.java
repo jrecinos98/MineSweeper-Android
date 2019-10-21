@@ -1,6 +1,8 @@
 package com.game.recinos.myminesweepergame.Listeners;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.os.CountDownTimer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,7 +16,9 @@ import com.game.recinos.myminesweepergame.Grid.Grid;
 import com.game.recinos.myminesweepergame.Grid.GridComponent;
 import com.game.recinos.myminesweepergame.CustomViews.Toolbar.GameClock;
 import com.game.recinos.myminesweepergame.CustomViews.Toolbar.MineCounter;
+import com.game.recinos.myminesweepergame.R;
 import com.game.recinos.myminesweepergame.util.Finder;
+import com.game.recinos.myminesweepergame.util.Util;
 
 import java.util.ArrayList;
 
@@ -27,27 +31,30 @@ public class GridListeners {
         Button smileyButton;
         MineCounter mineCounter;
         GameClock gameTimer;
-
+        Context mcontext;
         GridAdapters.GameGridAdapter myAdapter;
 
-        public GridOnItemClickListener(Grid myGrid,  Button smiley, MineCounter mineCount, GameClock timer, GridAdapters.GameGridAdapter adapter){
+        public GridOnItemClickListener(Grid myGrid,  Button smiley, MineCounter mineCount, GameClock timer, GridAdapters.GameGridAdapter adapter, Context context){
             gameGrid=myGrid;
             smileyButton=smiley;
             mineCounter=mineCount;
             gameTimer=timer;
             myAdapter=adapter;
+            mcontext=context;
         }
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             GridComponent temp= gameGrid.getCell(position);
             if(GameActivity.GAME_STATE == Constants.GAME_STATE.RELOADED){
                 if(GameActivity.time==0){
+                    GameActivity.playSound("empty");
                     gameGrid.handleFirstClick(position);
                 }
                 GameActivity.timerHandler.postDelayed(gameTimer,0);
                 GameActivity.GAME_STATE= Constants.GAME_STATE.PLAYING;
             }
             if(GameActivity.GAME_STATE == Constants.GAME_STATE.NOT_STARTED){
+                GameActivity.playSound("empty");
                 gameGrid.handleFirstClick(position);
                 //myAdapter.refresh();
                 GameActivity.timerHandler.postDelayed(gameTimer,0);
@@ -55,6 +62,7 @@ public class GridListeners {
             if(GameActivity.GAME_STATE == Constants.GAME_STATE.PLAYING) {
                 if (!temp.isOpened()) {
                     if(gameGrid.isActionButtonActive()){
+                        GameActivity.playSound("action_button");
                         gameGrid.handleActionButton(temp);
                     }
                     else if(GameActivity.getHintButtonTag()==1 && temp.isOpenable()){
@@ -62,29 +70,37 @@ public class GridListeners {
                             temp.showAsHintMine();
                         }
                         else{
+
                             if(temp.getValue() == 0 && temp.isOpenable()){
+                                GameActivity.playSound("empty");
                                 gameGrid.handleCellEmpty(position);
                             }
                             else {
-
+                                GameActivity.playSound("value");
                                 gameGrid.handleValueCell(temp);
                             }
                         }
                     }
                     else if (temp.isMine() && temp.isOpenable()){
+                        GameActivity.playSound("defeat");
                         gameGrid.handleClickedMine(temp);
                         smileyButton.setBackgroundResource(Constants.SMILEY_DEAD);
+                        Util.deleteSave(mcontext, Constants.SAVE_NAME);
                     }
                     else if (temp.getValue() == 0 && temp.isOpenable()) {
+                        GameActivity.playSound("empty");
                         gameGrid.handleCellEmpty(position);
                     }
                     else if(temp.isOpenable()) {
+                        GameActivity.playSound("value");
                         gameGrid.handleValueCell(temp);
                     }
                 }
                 if(gameGrid.getCorrectMoves() == (gameGrid.getGridHeight()*gameGrid.getGridWidth())- gameGrid.getMineNum()){
+                    GameActivity.playSound("victory");
                     gameGrid.gameWon();
                     smileyButton.setBackgroundResource(Constants.SMILEY_WON);
+                    Util.deleteSave(mcontext, Constants.SAVE_NAME);
                 }
 
             }
@@ -117,6 +133,7 @@ public class GridListeners {
                     return false;//returning false ensures that there wont be vibration.
                 }
                 else {
+                    GameActivity.playSound("action_button");
                     if(temp.isOpenable()){
                         gameGrid.decrementFlagNum();
                     }
@@ -142,12 +159,17 @@ public class GridListeners {
         Button mySmiley;
         GridAdapters.GameGridAdapter myAdapter;
         GridView gridView;
+        int current;
+        ArrayList<Integer> neighbors;
+        boolean animated;
         public GridOnTouchListener(Grid myGrid, Context context, Button smiley,GridAdapters.GameGridAdapter adapter, GridView instance ){
             gameGrid=myGrid;
             mySmiley=smiley;
             myAdapter=adapter;
             gridView=instance;
             mContext=context;
+            current=-1;
+            animated=false;
         }
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -157,11 +179,21 @@ public class GridListeners {
             if (position < 0) {
                 position = 0;
             }
+            //If the current touch is in a different cell or not one of the neighbors then fix
+            if(position != current && current!=-1 && animated){
+
+                GameActivity.playSound("smiley_unclick");
+                restore();
+                neighbors=null;
+                animated=false;
+            }
+            current=position;
             GridComponent temp = gameGrid.getCell(position);
-            ArrayList<Integer> neighbors = Finder.findNeighborPositions(temp.getRow(), temp.getCol(), gameGrid.getCells());
+            neighbors = Finder.findNeighborPositions(temp.getRow(), temp.getCol(), gameGrid.getCells());
             if (event.getAction() == MotionEvent.ACTION_MOVE) {
                 //return true;
             }
+           // GameActivity.playSound("disappear");
             handleAnimation(event, neighbors, temp);
             return false;
         }
@@ -172,20 +204,18 @@ public class GridListeners {
          * @param neighbors The neighboring cells of the clicked cell (temp)
          * @param temp      the clicked cell.
          */
-        public void handleAnimation(MotionEvent event, ArrayList<Integer> neighbors, GridComponent temp) {
+        private void handleAnimation(MotionEvent event, ArrayList<Integer> neighbors, GridComponent temp) {
             if (GameActivity.GAME_STATE == Constants.GAME_STATE.PLAYING && event.getAction() == MotionEvent.ACTION_UP) {
                 //smileyButton.setBackgroundResource(Constants.SMILEY_NORMAL);
-                mySmiley.setBackgroundResource(Constants.SMILEY_NORMAL);
-                for (int neighborPos : neighbors) {
-                    int row = neighborPos % gameGrid.getGridWidth();
-                    int col = neighborPos / gameGrid.getGridWidth();
-                    if (gameGrid.getCell(row,col).isAnimated()) {
-                        gameGrid.getCell(row,col).undoAnimation();
-                        myAdapter.refresh();
-                    }
+                if (animated){
+                    GameActivity.playSound("smiley_unclick");
                 }
+                animated=false;
+                restore();
             } else if (GameActivity.GAME_STATE == Constants.GAME_STATE.PLAYING && event.getAction() == MotionEvent.ACTION_DOWN) {
-                if (temp.isOpened() && temp.getValue() != 0) {
+                 if (temp.isOpened() && temp.getValue() != 0) {
+                    animated=true;
+                    GameActivity.playSound("smiley_click");
                     for (int neighborPos : neighbors) {
                         int row = neighborPos % gameGrid.getGridWidth();
                         int col = neighborPos / gameGrid.getGridWidth();
@@ -202,5 +232,18 @@ public class GridListeners {
             }
 
         }
+
+        private void restore(){
+            mySmiley.setBackgroundResource(Constants.SMILEY_NORMAL);
+            for (int neighborPos : neighbors) {
+                int row = neighborPos % gameGrid.getGridWidth();
+                int col = neighborPos / gameGrid.getGridWidth();
+                if (gameGrid.getCell(row,col).isAnimated()) {
+                    gameGrid.getCell(row,col).undoAnimation();
+                    myAdapter.refresh();
+                }
+            }
+        }
+
     }
 }

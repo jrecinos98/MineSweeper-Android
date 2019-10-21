@@ -75,14 +75,53 @@ public abstract class Constants implements Serializable {
         else
             return R.drawable.clock_start;
     }
-    public static class DifficultyWrap{
+    //Builds a new Difficulty enum with the given arguments.
+    public static Constants.GAME_DIFFICULTY generateCustomDiff(int toolbarHeight, int colAmount, int rowNum, int mineNum){
         Constants.GAME_DIFFICULTY difficulty;
+        difficulty=Constants.GAME_DIFFICULTY.CUSTOM;
+        difficulty.setToolBarHeight(toolbarHeight);
+        difficulty.setEnumWidth(colAmount);
+        difficulty.setEnumHeight(rowNum);
+        difficulty.setMineNum(mineNum);
+        return difficulty;
+    }
+    //Wrapper to difficulty enum. Used to modify the difficulty once created
+    // Also a wrapper used when serializing and making sure the fields are saved and can be restored when restoring from file
+    public static class DifficultyWrap implements Serializable{
+        Constants.GAME_DIFFICULTY difficulty;
+        private int width;
+        private int height;
+        private int mineNum;
+        private int toolBarHeight;
+
         public DifficultyWrap(Constants.GAME_DIFFICULTY diff) {
             difficulty=diff;
+            width=diff.getWidth();
+            height=diff.getHeight();
+            mineNum= diff.getMineNum();
+            toolBarHeight= diff.getToolBarHeight();
         }
         public Constants.GAME_DIFFICULTY getDifficulty(){
+            if (difficultyReset()){
+                return restoreDifficulty();
+            }
             return difficulty;
         }
-        public void setDifficulty(Constants.GAME_DIFFICULTY diff){difficulty=diff;}
+        //Used when restoring from a file
+        private Constants.GAME_DIFFICULTY restoreDifficulty(){
+            difficulty= generateCustomDiff(toolBarHeight,width,height,mineNum);
+            return difficulty;
+        }
+        //When serialized the fields in the enum are saved but the values themselves are not and equal 0
+        private Boolean difficultyReset(){
+            return (difficulty.getToolBarHeight() == 0 && difficulty.width==0 && difficulty.height==0 && difficulty.mineNum==0);
+        }
+        public void setDifficulty(Constants.GAME_DIFFICULTY diff){
+            difficulty=diff;
+            width=diff.getWidth();
+            height=diff.getHeight();
+            mineNum= diff.getMineNum();
+            toolBarHeight= diff.getToolBarHeight();
+        }
     }
 }

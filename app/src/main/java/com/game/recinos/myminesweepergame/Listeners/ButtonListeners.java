@@ -81,16 +81,6 @@ public abstract class ButtonListeners {
             return mineNum;
 
         }
-
-        public Constants.GAME_DIFFICULTY generateCustomDiff(int toolbarHeight, int colAmount, int rowNum, int mineNum){
-            Constants.GAME_DIFFICULTY difficulty;
-            difficulty=Constants.GAME_DIFFICULTY.CUSTOM;
-            difficulty.setToolBarHeight(toolbarHeight);
-            difficulty.setEnumWidth(colAmount);
-            difficulty.setEnumHeight(rowNum);
-            difficulty.setMineNum(mineNum);
-            return difficulty;
-        }
         @Override
         public void onClick(View v){
             Constants.GAME_DIFFICULTY difficulty= wrapper.getDifficulty();
@@ -115,7 +105,7 @@ public abstract class ButtonListeners {
             }
             int mineNum= getMines(difficulty, colAmount);
             //Generates Custom Difficulty
-            difficulty= generateCustomDiff(toolbarHeight, colAmount, rowNum, mineNum);
+            difficulty= Constants.generateCustomDiff(toolbarHeight, colAmount, rowNum, mineNum);
 
             Intent toGame= new Intent(mContext,GameActivity.class);
             toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -135,7 +125,6 @@ public abstract class ButtonListeners {
      */
     public static class LoadListener implements View.OnClickListener{
         Context mContext;
-        Constants.GAME_DIFFICULTY difficulty;
         public LoadListener(Context mcontext) {
             mContext=mcontext;
         }
@@ -144,12 +133,10 @@ public abstract class ButtonListeners {
             if(Util.saveExist(Constants.SAVE_NAME, mContext.fileList())){
                 Object items[]= Util.loadGame(mContext,Constants.SAVE_NAME);
                 Grid loaded=  (Grid) items[0];
-                difficulty=loaded.getDifficulty();
+                Constants.GAME_DIFFICULTY difficulty=loaded.getDifficulty();
                 Integer time= (Integer) items[1];
-
                 Intent toGame= new Intent(mContext,GameActivity.class);
                 toGame.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                toGame.putExtra("GAME_DIFFICULTY",difficulty);
                 String t_height= Integer.toString(difficulty.getToolBarHeight());
                 toGame.putExtra("TOOLBAR_HEIGHT", t_height);
 

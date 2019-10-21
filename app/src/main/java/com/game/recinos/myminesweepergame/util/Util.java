@@ -112,16 +112,17 @@ public class Util {
     public static boolean saveExist(String fileName, String[] files){
         for (String file : files) {
             if (file.equals(fileName)) {
-                Log.d("Save", "True");
+               // Log.d("Save", "True");
                 return true;
             }
         }
         return false;
     }
 
-    public static void saveToBundle(Bundle outState, Grid game, Constants.GAME_DIFFICULTY diff, Integer time){
+    public static void saveToBundle(Bundle outState, Grid game, Constants.GAME_DIFFICULTY diff, Integer time, Constants.GAME_STATE state){
         outState.putParcelable("GameGrid", game);
         outState.putSerializable("Difficulty", diff);
+        outState.putSerializable("State", state);
         outState.putInt("Time", time);
     }
 }

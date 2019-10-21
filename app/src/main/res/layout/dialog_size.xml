@@ -110,8 +110,8 @@
             android:layout_marginRight="0dp"
             android:gravity="center"
             android:text="Medium"
-            android:paddingEnd="110dp"
-            android:paddingRight="110dp"
+            android:paddingEnd="105dp"
+            android:paddingRight="105dp"
             android:visibility="visible" />
 
 

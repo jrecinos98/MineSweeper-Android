@@ -1,6 +1,10 @@
 package com.game.recinos.myminesweepergame;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +33,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 
 @SuppressWarnings("ClickableViewAccessibility")
@@ -41,6 +47,9 @@ public class GameActivity extends AppCompatActivity {
 
 
     public static Vibrator vibe;
+
+    static SoundPool soundPool;
+    public static Dictionary trackNum;
 
 
     private Button mySmileyButton;
@@ -59,16 +68,17 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GAME_STATE= Constants.GAME_STATE.NOT_STARTED;
-        int ToolBarHeight= Integer.parseInt(getIntent().getStringExtra("TOOLBAR_HEIGHT"));
+        GameActivity.time=0;
         vibe= (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        int ToolBarHeight= Integer.parseInt(getIntent().getStringExtra("TOOLBAR_HEIGHT"));
         setContentView(R.layout.activity_main);
         //Reason why toolbar is not increasing right
         setToolBarHeight(ToolBarHeight);
         initToolBarButtons();
 
         //Will occur when user was playing and went idle. Make sure the game wasn't over. If it did start a new one
-        if(savedInstanceState != null && savedInstanceState.getSerializable("GameGrid") != null){
-            GameActivity.GAME_STATE= Constants.GAME_STATE.RELOADED;
+        if(savedInstanceState != null){
+            GameActivity.GAME_STATE= (Constants.GAME_STATE) savedInstanceState.getSerializable("State");
             GameActivity.time= savedInstanceState.getInt("Time");
             difficulty= (Constants.GAME_DIFFICULTY) savedInstanceState.getSerializable("Difficulty");
             //Difficulty must be defined before MineCounter created.
@@ -76,40 +86,39 @@ public class GameActivity extends AppCompatActivity {
             createTimer();
             reloadGame((Grid) savedInstanceState.getParcelable("GameGrid"));
 
-            Toast.makeText(getApplicationContext(),"Game Has Been Reloaded", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Game Was Reloaded", Toast.LENGTH_LONG).show();
         }
         else {
             Grid loaded= (Grid)getIntent().getExtras().getSerializable("GAME_GRID");
-
             //If grid is null then the game wasn't read from a file
             if(loaded == null){
                 difficulty = (Constants.GAME_DIFFICULTY) getIntent().getSerializableExtra("GAME_DIFFICULTY");
-                //If it is null it means that it didn't come from an intent but rather the game is reloaded from bundle.
-                //Will only happen when user loses and leaves app. We want to reload a new game at that point with the same difficulty
-                if (difficulty == null){
-                    difficulty= (Constants.GAME_DIFFICULTY) savedInstanceState.getSerializable("Difficulty");
-                    time=0;
-                }
                 createMineCounter();
                 createTimer();
                 setUpNewGrid();
             }
             else{
                 //Here means that the game was loaded from a file so we reload everything
-                Log.d("Reload", "Game has been reloaded");
                 Bundle reloaded= getIntent().getExtras();
                 GameActivity.GAME_STATE= Constants.GAME_STATE.RELOADED;
-                GameActivity.time=  (Integer) reloaded.getInt("TIME");
-                difficulty = (Constants.GAME_DIFFICULTY) getIntent().getSerializableExtra("GAME_DIFFICULTY");
+                GameActivity.time= reloaded.getInt("TIME");
+                difficulty =  loaded.getDifficulty();
                 createMineCounter();
                 createTimer();
                 reloadGame(loaded);
+                Toast.makeText(getApplicationContext(),"Game Was Restored from File", Toast.LENGTH_LONG).show();
+
             }
 
         }
         initWonDialog();
         initWarningDialog();
 
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        initSounds();
     }
 
     /**
@@ -118,15 +127,8 @@ public class GameActivity extends AppCompatActivity {
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if(GAME_STATE != Constants.GAME_STATE.LOST){
-            //User didnt lose so restore previous game
-            Util.saveToBundle(outState, gameGrid, difficulty, time);
-            super.onSaveInstanceState(outState);
-        }
-        else{
-            //User lost. Reload grid with the same difficulty
-            outState.putSerializable("Difficulty", difficulty);
-        }
+        Util.saveToBundle(outState, gameGrid, difficulty, time, GAME_STATE);
+        super.onSaveInstanceState(outState);
     }
     protected  void onPause(){
         super.onPause();
@@ -147,9 +149,7 @@ public class GameActivity extends AppCompatActivity {
     public void onBackPressed(){
         super.onBackPressed();
         //If game was lost don't save it
-        if(GAME_STATE != Constants.GAME_STATE.LOST) {
-            Bundle bundle= new Bundle();
-
+        if(GAME_STATE != Constants.GAME_STATE.LOST && GAME_STATE != Constants.GAME_STATE.WON) {
             //Put all objects to be saved into an Object array
             Object items[]= new Object[2];
             items[0]= gameGrid;
@@ -157,7 +157,7 @@ public class GameActivity extends AppCompatActivity {
 
             Util.save(getApplicationContext(), Constants.SAVE_NAME, items);
             GameActivity.time = 0;
-            Log.d("Save", String.valueOf(Util.saveExist(Constants.SAVE_NAME, fileList())));
+            //Log.d("Save", String.valueOf(Util.saveExist(Constants.SAVE_NAME, fileList())));
         }
         else{
             //User lost so delete previous save file
@@ -176,6 +176,31 @@ public class GameActivity extends AppCompatActivity {
         createTimer();
         setUpNewGrid();
     }
+    /**
+     *
+     */
+    public void initSounds(){
+        int maxStreams = 2;
+        Context mContext = getApplicationContext();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            soundPool = new SoundPool.Builder()
+                    .setMaxStreams(maxStreams)
+                    .build();
+        } else {
+            soundPool = new SoundPool(maxStreams, AudioManager.STREAM_MUSIC, 0);
+        }
+        trackNum= new Hashtable();
+        //soundPool,load() return an int back which is stored in dic
+        trackNum.put("empty", soundPool.load(getApplicationContext(), R.raw.empty,1));
+        trackNum.put("victory", soundPool.load(getApplicationContext(), R.raw.victory,1));
+        trackNum.put("defeat", soundPool.load(getApplicationContext(), R.raw.defeat,1));
+        trackNum.put("value", soundPool.load(getApplicationContext(), R.raw.value,1));
+
+        trackNum.put("action_button", soundPool.load(getApplicationContext(), R.raw.flag,1));
+        trackNum.put("smiley_click", soundPool.load(getApplicationContext(), R.raw.smiley_press,1));
+        trackNum.put("smiley_unclick", soundPool.load(getApplicationContext(), R.raw.smiley_unpress,1));
+    }
+
     /**
      * Creates all the toolbar buttons.
      */
@@ -211,7 +236,7 @@ public class GameActivity extends AppCompatActivity {
         final GridView myMinesweeperGrid = findViewById(R.id.myMinesweeperGrid);
         myMinesweeperGrid.setNumColumns(gameGrid.getDifficulty().getWidth());
         myMinesweeperGrid.setAdapter(myAdapter);
-        myMinesweeperGrid.setOnItemClickListener(new GridListeners.GridOnItemClickListener(gameGrid,mySmileyButton,mineCounter,gameTimer,myAdapter));
+        myMinesweeperGrid.setOnItemClickListener(new GridListeners.GridOnItemClickListener(gameGrid,mySmileyButton,mineCounter,gameTimer,myAdapter, getApplicationContext()));
         myMinesweeperGrid.setOnItemLongClickListener(new GridListeners.GridOnItemLongClickListener(gameGrid,mineCounter,myAdapter));
         myMinesweeperGrid.setOnTouchListener(new GridListeners.GridOnTouchListener(gameGrid,getApplicationContext(),mySmileyButton, myAdapter,myMinesweeperGrid));
     }
@@ -233,15 +258,19 @@ public class GameActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        playSound("smiley_click");
                         v.setBackgroundResource(Constants.SMILEY_RESET);
                         return false; // if you want to handle the touch event return true
                     case MotionEvent.ACTION_UP:
                         if(GAME_STATE==Constants.GAME_STATE.PLAYING){
-                            warningDialog.show();}
+                            warningDialog.show();
+                        }
                         else if (GAME_STATE !=Constants.GAME_STATE.NOT_STARTED) {
+                            playSound("smiley_unclick");
                             resetGame();
                         }
                         else{
+                            playSound("smiley_unclick");
                             v.setBackgroundResource(Constants.SMILEY_NORMAL);
                         }
 
@@ -311,6 +340,17 @@ public class GameActivity extends AppCompatActivity {
     public static void clickVibrate(int duration) {
         vibe.vibrate(duration);
     }
+
+    public static void playSound(String name){
+       // Log.d("Sound", "Played");
+        soundPool.play((int) trackNum.get(name),1,1,1,0,1f);
+
+    }
+
+    public final void cleanUpSound(){
+        soundPool.release();
+        soundPool = null;
+    }
     /**
      * initializes the won dialog box
      */
@@ -337,6 +377,8 @@ public class GameActivity extends AppCompatActivity {
         yesButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+
+                playSound("smiley_unclick");
                 clickVibrate(1);
                 warningDialog.dismiss();
                 resetGame();
@@ -346,6 +388,8 @@ public class GameActivity extends AppCompatActivity {
         noButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+
+                playSound("smiley_unclick");
                 clickVibrate(1);
                 warningDialog.dismiss();
                 updateSmileyButton(Constants.SMILEY_NORMAL);
