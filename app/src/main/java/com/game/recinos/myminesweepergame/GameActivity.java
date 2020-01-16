@@ -7,9 +7,9 @@ import android.media.SoundPool;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
 import android.view.MotionEvent;
@@ -106,7 +106,7 @@ public class GameActivity extends AppCompatActivity {
                 createMineCounter();
                 createTimer();
                 reloadGame(loaded);
-                Toast.makeText(getApplicationContext(),"Game Was Restored from File", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"Game Was Restored", Toast.LENGTH_LONG).show();
 
             }
 
@@ -190,7 +190,7 @@ public class GameActivity extends AppCompatActivity {
             soundPool = new SoundPool(maxStreams, AudioManager.STREAM_MUSIC, 0);
         }
         trackNum= new Hashtable();
-        //soundPool,load() return an int back which is stored in dic
+        //soundPool.load() return an int back which is stored in dic
         trackNum.put("empty", soundPool.load(getApplicationContext(), R.raw.empty,1));
         trackNum.put("victory", soundPool.load(getApplicationContext(), R.raw.victory,1));
         trackNum.put("defeat", soundPool.load(getApplicationContext(), R.raw.defeat,1));
@@ -377,7 +377,6 @@ public class GameActivity extends AppCompatActivity {
         yesButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
                 playSound("smiley_unclick");
                 clickVibrate(1);
                 warningDialog.dismiss();
@@ -388,7 +387,6 @@ public class GameActivity extends AppCompatActivity {
         noButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
                 playSound("smiley_unclick");
                 clickVibrate(1);
                 warningDialog.dismiss();

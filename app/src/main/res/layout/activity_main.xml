@@ -7,7 +7,7 @@
     android:background="@color/gridColor"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
@@ -124,7 +124,7 @@
                 android:layout_toEndOf="@+id/mines1"
                 android:layout_toRightOf="@+id/mines1" />
         </RelativeLayout>
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
         
 
     <GridView
