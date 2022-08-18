@@ -43,7 +43,7 @@ public class MenuActivity extends AppCompatActivity {
     }
     public void createSettingsButton(){
         mySettingsButton= findViewById(com.game.recinos.myminesweepergame.R.id.mySettingsButton);
-        mySettingsButton.setBackgroundResource(Constants.SETTING);
+        //mySettingsButton.setBackgroundResource(Constants.SETTING);
     }
     public void setUpListeners(){
         mySettingsButton.setOnClickListener(new ButtonListeners.SettingsListener(getApplicationContext()));

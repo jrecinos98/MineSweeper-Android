@@ -113,7 +113,6 @@
                 android:layout_height="47dp"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/timer2"
-                android:background="@drawable/clock_colon"
                 android:layout_toLeftOf="@+id/timer2" />
 
             <Button
